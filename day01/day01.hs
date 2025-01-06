@@ -32,15 +32,22 @@ part2 = part 2
 
 example = do
     contents <- readLines "example.txt"
-    let numbers = map (listToNumbers . words) contents in
-        let leftNumbers = sort (map head numbers) in
-            let rightNumbers = sort (map last numbers) in
-                let result = sum (zipWith (\x y -> abs (x - y)) leftNumbers rightNumbers) in
-        putStr (show result)
+    let numbers = map (listToNumbers . words) contents
+        leftNumbers = sort (map head numbers)
+        rightNumbers = sort (map last numbers)
+        result = sum (zipWith (\x y -> abs (x - y)) leftNumbers rightNumbers)
+    putStr (show result)
 
 example2 = do
     part1 11 "example.txt" day01part01
 
+example2' = do
+    part1 11 "example.txt" day01part01'
+
+day01part01 :: [String] -> Integer
+day01part01 xs = sum $ zipWith (\x y -> abs (x - y)) (sort $ map (head . listToNumbers . words) xs) (sort $ map (last . listToNumbers . words) xs)
 
 
-day01part01 x = sum (zipWith (\x y -> abs (x - y)) (sort (map (head . listToNumbers . words) x) ) (sort (map (last . listToNumbers . words) x))
+day01part01' :: [String] -> Integer
+day01part01' xs = sum $ zipWith (\x y -> abs (x - y)) (convert head) (convert last)
+    where convert taker = sort $ map (taker . listToNumbers . words) xs
