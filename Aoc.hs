@@ -16,9 +16,9 @@ part number expected filename op = do
     contents <- readLines filename
     let result = op contents in
         if result == expected then
-            putStrLn $ "Part " ++ show number ++ "Pass " ++ show result
+            putStrLn $ "Part " ++ show number ++ " Pass " ++ show result
         else
-            putStrLn $ "Part " ++ show number ++ "Fail, expected " ++ show expected ++ " but got " ++ show result
+            putStrLn $ "Part " ++ show number ++ " Fail, expected " ++ show expected ++ " but got " ++ show result
 
 
 part1 :: (Eq a, Show a) => a -> FilePath -> ([String] -> a) -> IO ()
