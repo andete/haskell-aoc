@@ -13,10 +13,10 @@ part1_input = do
 
 
 part2_example = do
-    part1 9 "day04/example.txt" day04part2
+    part2 9 "day04/example.txt" day04part2
 
 part2_input = do
-    part1 1941 "day04/input.txt" day04part2
+    part2 1941 "day04/input.txt" day04part2
 
 charAt :: [String] -> Int -> Int -> Char
 charAt field x y
