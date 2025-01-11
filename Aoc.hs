@@ -1,4 +1,4 @@
-module Aoc(readLines, listToNums, part, part1, part2) where
+module Aoc(readLines, listToNums, part, part1, part2, joinToString) where
 
 readLines :: FilePath -> IO [String]
 readLines = fmap lines . readFile
@@ -26,3 +26,6 @@ part1 = part 1
 
 part2 :: (Eq a, Show a) => a -> FilePath -> ([String] -> a) -> IO ()
 part2 = part 2
+
+joinToString :: String -> [String] -> String
+joinToString separator = foldr1 (\x acc -> x ++ separator ++ acc)
