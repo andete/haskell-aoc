@@ -32,3 +32,5 @@ day06part1 field = -- trace (CharMaze.show maze []) $
         --trace (show start) $ trace (CharMaze.show maze ms) 
         length ms
     where maze = CharMaze.parse field
+
+main = do part1_input
