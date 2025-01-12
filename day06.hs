@@ -15,6 +15,12 @@ part1_example = do
 part1_input = do
     part1 5153 "day06/input.txt" day06part1
 
+part2_example = do
+    part2 6 "day06/example.txt" day06part2
+
+part2_input = do
+    part2 1711 "day06/input.txt" day06part2
+
 moves :: CharMaze -> Maybe Location -> Direction4 -> [Location] -> [Location]
 moves _ Nothing _ visited = nub visited
 moves maze (Just loc) dir visited =
@@ -25,6 +31,9 @@ moves maze (Just loc) dir visited =
                     then moves maze (Just nextLoc) dir (nextLoc:visited) 
                     else moves maze (Just loc) (rotate90 dir) visited 
 
+guardWillLoop :: CharMaze -> Bool
+guardWillLoop maze = False
+
 day06part1 :: [String] -> Int
 day06part1 field = -- trace (CharMaze.show maze []) $
     let start = CharMaze.find maze '^' in
@@ -32,5 +41,11 @@ day06part1 field = -- trace (CharMaze.show maze []) $
         --trace (show start) $ trace (CharMaze.show maze ms) 
         length ms
     where maze = CharMaze.parse field
+
+day06part2 :: [String] -> Int
+day06part2 field = length $ filter (\l -> guardWillLoop $ CharMaze.set maze l '#') obstacleCandidates
+    where maze = CharMaze.parse field
+          start = CharMaze.find maze '^'
+          obstacleCandidates = filter (/= start) $ moves maze (Just start) Direction4.North [start]
 
 main = do part1_input
