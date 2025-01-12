@@ -1,4 +1,4 @@
-module Direction4(Direction4(..), (+|)) where
+module Direction4(Direction4(..), (+|), rotate180, rotate90, rotate90cc) where
 import Location (Location (..))
 
 data Direction4 = North | East | South | West
@@ -12,3 +12,12 @@ direction4location West  = Location (-1) 0
 
 (+|) :: Location -> Direction4 -> Location
 (+|) loc dir = loc + direction4location dir
+
+rotate90 :: Direction4 -> Direction4
+rotate90 dir = toEnum $ (fromEnum dir + 1) `mod` 4
+
+rotate90cc :: Direction4 -> Direction4
+rotate90cc dir = toEnum $ (fromEnum dir + 3) `mod` 4
+
+rotate180 :: Direction4 -> Direction4
+rotate180 dir = toEnum $ (fromEnum dir + 2) `mod` 4

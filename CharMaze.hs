@@ -1,8 +1,9 @@
-module CharMaze(CharMaze(..), parse, show) where
+module CharMaze(CharMaze(..), LocatedChar(..), parse, show, find, at) where
 
 import Location (Location (..))
 import Prelude hiding (show)
 import Aoc (joinToString)
+import Control.Lens ((^?),element)
 
 data LocatedChar = LocatedChar Location Char deriving (Eq, Show)
 
@@ -20,3 +21,8 @@ showLocatedChar visited (LocatedChar loc c) = if loc `elem` visited then "\ESC[3
 show :: CharMaze -> [Location] -> String
 show (CharMaze xss) visited = joinToString "\n" $ map (joinToString "" . map (showLocatedChar visited)) xss
 
+find :: CharMaze -> Char -> Location
+find (CharMaze xss) c = head [ loc | LocatedChar loc c' <- concat xss, c == c' ]
+
+at :: CharMaze -> Location -> Maybe LocatedChar
+at (CharMaze xss) (Location x y) = xss ^? element y . element x
