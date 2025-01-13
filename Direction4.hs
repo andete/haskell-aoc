@@ -1,8 +1,12 @@
 module Direction4(Direction4(..), (+|), rotate180, rotate90, rotate90cc) where
 import Location (Location (..))
+import Data.Hashable (Hashable (hashWithSalt))
 
 data Direction4 = North | East | South | West
     deriving (Enum, Show, Eq)
+
+instance Hashable Direction4 where
+    hashWithSalt salt dir = hashWithSalt salt (fromEnum dir)
 
 direction4location :: Direction4 -> Location
 direction4location North = Location 0 (-1)

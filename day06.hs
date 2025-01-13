@@ -8,6 +8,8 @@ import Location (Location(..))
 import Data.Maybe (isNothing, isJust)
 import Data.List (nub)
 import GHC.Base (maxInt)
+import qualified Data.HashSet as HashSet
+import qualified Data.HashMap.Internal.Array as Hashset
 
 part1_example = do
     part1 41 "day06/example.txt" day06part1
@@ -32,17 +34,17 @@ moves maze (Just loc) dir visited =
                     else moves maze (Just loc) (rotate90 dir) visited
 
 guardWillLoop :: CharMaze -> Bool
-guardWillLoop maze = guardWillLoop' (start, Direction4.North) [] maze
+guardWillLoop maze = guardWillLoop' (start, Direction4.North) HashSet.empty maze
     where start = CharMaze.find maze '^'
 
-guardWillLoop' :: (Location, Direction4) -> [(Location, Direction4)] -> CharMaze -> Bool
+guardWillLoop' :: (Location, Direction4) -> HashSet.HashSet (Location, Direction4) -> CharMaze -> Bool
 guardWillLoop' (location, direction) visited maze
- | (location, direction) `elem` visited = True
+ | (location, direction) `HashSet.member` visited = True
  | otherwise =
     let next = CharMaze.at maze (location +| direction) in
         (isJust next && (let Just (LocatedChar nextLoc nextChar) = next in
                              if nextChar /= '#'
-                                 then guardWillLoop' (nextLoc, direction) ((location, direction):visited) maze
+                                 then guardWillLoop' (nextLoc, direction) (HashSet.insert (location, direction) visited) maze
                                  else guardWillLoop' (location, rotate90 direction) visited maze))
 
 day06part1 :: [String] -> Int

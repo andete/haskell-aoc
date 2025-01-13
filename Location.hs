@@ -1,6 +1,11 @@
 module Location(Location(..)) where
 
+import Data.Hashable (Hashable, hashWithSalt)
+
 data Location = Location Int Int deriving (Eq,Show)
+
+instance Hashable Location where
+    hashWithSalt salt (Location x y) = hashWithSalt salt (x,y)
 
 instance Num Location where
     (Location x1 y1) + (Location x2 y2) = Location (x1 + x2) (y1 + y2)
