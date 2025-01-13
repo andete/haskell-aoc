@@ -1,4 +1,4 @@
-module Location(Location(..)) where
+module Location(Location(..), x ,y) where
 
 import Data.Hashable (Hashable, hashWithSalt)
 
@@ -14,3 +14,9 @@ instance Num Location where
     abs (Location x y) = Location (abs x) (abs y)
     signum (Location x y) = Location (signum x) (signum y)
     fromInteger x = Location (fromInteger x) (fromInteger x)
+
+x :: Location -> Int
+x (Location x _) = x
+
+y :: Location -> Int
+y (Location _ y) = y

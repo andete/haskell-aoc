@@ -1,8 +1,10 @@
-module CharMaze(CharMaze(..), LocatedChar(..), parse, show, find, at, set) where
+module CharMaze(CharMaze(..), LocatedChar(..), parse, show, find, findAll, at, set, chars, validLocation) where
 
 import Location (Location (..))
+import qualified Location
 import Prelude hiding (show)
 import Aoc (joinToString)
+import Data.List (nub)
 
 data LocatedChar = LocatedChar Location Char deriving (Eq, Show)
 
@@ -24,7 +26,10 @@ show :: CharMaze -> [Location] -> String
 show (CharMaze xss) visited = joinToString "\n" $ map (joinToString "" . map (showLocatedChar visited)) xss
 
 find :: CharMaze -> Char -> Location
-find (CharMaze xss) c = head [ loc | LocatedChar loc c' <- concat xss, c == c' ]
+find (CharMaze xss) c = head $ findAll (CharMaze xss) c
+
+findAll :: CharMaze -> Char -> [Location]
+findAll (CharMaze xss) c = [ loc | LocatedChar loc c' <- concat xss, c == c' ]
 
 at :: CharMaze -> Location -> Maybe LocatedChar
 at (CharMaze xss) (Location x y)
@@ -39,3 +44,9 @@ updateIndexed f i = zipWith (\j x -> if i == j then f x else x) [0..]
 
 set :: CharMaze -> Char -> Location -> CharMaze
 set (CharMaze xss) newC (Location x y) = CharMaze $ updateIndexed (updateIndexed (update newC) x) y xss
+
+chars :: CharMaze -> [Char]
+chars (CharMaze xss) = nub [ c | LocatedChar _ c <- concat xss ]
+
+validLocation :: CharMaze -> Location -> Bool
+validLocation (CharMaze xss) (Location x y) = y >= 0 && y < length xss && x >= 0 && x < length (head xss)
