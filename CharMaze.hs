@@ -37,5 +37,5 @@ at (CharMaze xss) (Location x y)
 updateIndexed :: (a -> a) -> Int -> [a] -> [a]
 updateIndexed f i = zipWith (\j x -> if i == j then f x else x) [0..]
 
-set :: CharMaze -> Location -> Char -> CharMaze
-set (CharMaze xss) (Location x y) newC = CharMaze $ updateIndexed (updateIndexed (update newC) x) y xss
+set :: CharMaze -> Char -> Location -> CharMaze
+set (CharMaze xss) newC (Location x y) = CharMaze $ updateIndexed (updateIndexed (update newC) x) y xss
