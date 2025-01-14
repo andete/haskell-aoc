@@ -1,6 +1,7 @@
 import Data.Maybe (isJust, isNothing)
 import Debug.Trace (trace)
 import Aoc
+import Data.List (nub, elemIndex, find)
 
 part1_example = do
     part1 1928 "day09/example.txt" day09part1
@@ -20,17 +21,6 @@ makeMemoryMap input =
         if even i then map (const (Just (i `div` 2))) [0 .. x - 1] else map (const Nothing) [0 .. x - 1]
         ) indices
     where indices = [0.. (length input - 1)]
-
--- to is always to the left of from
-move :: [Maybe Int] -> Int -> Int -> [Maybe Int]
-move xs from to =
-    before ++ [f] ++ between ++ [g] ++ after
-    where f = xs !! from
-          g = xs !! to
-          before = take to xs
-          between = take (from - to - 1) (drop (to + 1) xs)
-          after = drop (from + 1) xs
-
 
 compactMemoryMap:: [Maybe Int] -> [Maybe Int]
 compactMemoryMap xs =
@@ -53,6 +43,7 @@ compactMemoryMap xs =
           amountMoved = length moveSlots
           fillWith = map snd $ take amountMoved filledSlots
 
+
 checkSum :: [Maybe Int] -> Integer
 checkSum xs =
     sum $ zipWith (\ index ch
@@ -63,7 +54,88 @@ checkSum xs =
 day09part1 :: [String] -> Integer
 day09part1 field = checkSum $ compactMemoryMap $ makeMemoryMap $ head field
 
-day09part2 :: [String] -> Integer
-day09part2 field = 0
+data Segment = Segment { pointer :: Int, size :: Int, fileHandle :: Maybe Int } deriving (Eq)
 
-main = do part1_input
+instance Show Segment where
+    show (Segment p s f) = "@" ++ show p ++ "+" ++ show s ++ case f of
+        Just x -> "F" ++ show x
+        Nothing -> "E"
+
+isFile :: Segment -> Bool
+isFile (Segment _ _ t) = isJust t
+
+isEmpty :: Segment -> Bool
+isEmpty = not . isFile
+
+makeSegmentMap :: String -> [Segment]
+makeSegmentMap input =
+    concatMap (filter (\x -> size x > 0) . (\(p, i, n) ->
+         if even i then [Segment p n (Just (i `div` 2))] else [Segment p n Nothing])) z 
+    where indices = [0.. (length input - 1)]
+          numbers = map (read . (:[])) input
+          pointers = reverse $ fst $ foldl (\(acc, p) x -> (p:acc, p+x) ) ([],0) numbers
+          z = zip3 pointers indices numbers
+
+
+-- swap two segments, assuming they are equal in size; swap them, keep pointers though
+swapSegment :: [Segment] -> Segment -> Segment -> [Segment]
+swapSegment xs s1 s2 = simplifySegmentMap $ map (\x ->
+    if x == s1 then s2 { pointer = pointer s1} else if x == s2 then s1 { pointer = pointer s2 } else x) xs
+
+-- take any subsequent Empty segments and merge them into one
+simplifySegmentMap :: [Segment] -> [Segment]
+simplifySegmentMap [] = []
+simplifySegmentMap ((Segment p s1 Nothing):(Segment _ s2 Nothing):xs) = simplifySegmentMap $ Segment p (s1 + s2) Nothing:xs
+simplifySegmentMap (x:xs) = x:simplifySegmentMap xs
+
+tr :: Show b => String -> b -> a -> a
+tr prefix b = trace (prefix ++ ": " ++ show b)
+
+-- swap two segments, assuming the Empty one (which is first) is bigger then the File one
+-- replace the Empty one with the File + remaining Empty and create a new Empty to replace the File
+swapSegment2 :: [Segment] -> Segment -> Segment -> [Segment]
+swapSegment2 xs e s =
+    simplifySegmentMap $ concatMap (\x ->
+        if x == e then 
+            [Segment (pointer e) (size s) (fileHandle s), Segment (pointer e + size s) (size e - size s) Nothing] else 
+                if x == s then 
+                    [Segment (pointer s) (size s) Nothing]
+                else [x]) xs
+
+
+-- try to move a segment the most to the left as possible
+moveSegment :: [Segment] -> Segment -> [Segment]
+moveSegment xs s = case maybeEmptyForSegment of
+    Just e -> let es = size e in
+        if es == ss then
+            -- replace empty segment with file segment and file segment with empty segment
+            swapSegment xs e s
+        else if es > ss then
+            -- replace empty segment with file segment + remaining empty segment and file segment with empty segment
+            swapSegment2 xs e s
+        else xs -- not possible 
+    Nothing -> xs
+    where ss = size s
+          maybeEmptyForSegment = find (\x -> isEmpty x && size x >= ss && pointer x < pointer s) xs
+
+compactSegmentMap:: [Segment] -> [Segment]
+compactSegmentMap xs =
+    foldl moveSegment xs files
+    where files = reverse $ filter isFile xs
+
+segmentMapToMemoryMap :: [Segment] -> [Maybe Int]
+segmentMapToMemoryMap [] = []
+segmentMapToMemoryMap (x:xs) = case x of
+    Segment _ size (Just f) -> replicate size (Just f) ++ segmentMapToMemoryMap xs
+    Segment _ size Nothing -> replicate size Nothing ++ segmentMapToMemoryMap xs
+
+showMemoryMap :: [Maybe Int] -> String
+showMemoryMap [] = ""
+showMemoryMap (x:xs) = case x of
+    Just y -> show y ++ showMemoryMap xs
+    Nothing -> "." ++ showMemoryMap xs
+
+day09part2 :: [String] -> Integer
+day09part2 field = checkSum $ segmentMapToMemoryMap $ compactSegmentMap $ makeSegmentMap $ head field
+
+main = do part2_input
