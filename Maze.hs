@@ -1,4 +1,4 @@
-module Maze(Maze(..), Located(..), parse, showMaze) where
+module Maze(Maze(..), Located(..), parse, showMaze, findAll) where
 
 import qualified Data.Vector as V
 import Location (Location (..))
@@ -22,3 +22,6 @@ showMaze maze visited = joinToString "\n" $ map (joinToString "" . map (showLoca
 
 mazeToLists :: Maze a -> [[Located a]]
 mazeToLists (Maze v) = V.toList $ fmap V.toList v
+
+findAll :: (Eq a) => Maze a -> a -> [Location]
+findAll maze c = map (\(Located l _) -> l) $ concatMap (filter (\(Located _ c') -> c' == c)) (mazeToLists maze)
