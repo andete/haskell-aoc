@@ -3,8 +3,7 @@ import qualified Maze
 import Debug.Trace (trace)
 import Location
 import Data.List (nub)
-import qualified Located
-import Located (Located(..))
+import Located
 
 part1_example = do
     part1 1 "day10/example.txt" day10part1
