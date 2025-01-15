@@ -1,5 +1,8 @@
 module Aoc(readLines, listToNums, part, part1, part2, joinToString) where
 
+import qualified Data.Vector as V
+
+
 readLines :: FilePath -> IO [String]
 readLines = fmap lines . readFile
 
