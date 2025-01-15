@@ -1,6 +1,7 @@
-module Direction4(Direction4(..), (+|), rotate180, rotate90, rotate90cc) where
+module Direction4(Direction4(..), (+|), rotate180, rotate90, rotate90cc, all) where
 import Location (Location (..))
 import Data.Hashable (Hashable (hashWithSalt))
+import Prelude hiding (all)
 
 data Direction4 = North | East | South | West
     deriving (Enum, Show, Eq)
@@ -25,3 +26,6 @@ rotate90cc dir = toEnum $ (fromEnum dir + 3) `mod` 4
 
 rotate180 :: Direction4 -> Direction4
 rotate180 dir = toEnum $ (fromEnum dir + 2) `mod` 4
+
+all :: [Direction4]
+all = [North, East, South, West]

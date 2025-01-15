@@ -1,10 +1,12 @@
-module Maze(Maze(..), Located(..), parse, showMaze, findAll) where
+module Maze(Maze(..), Located(..), parse, showMaze, findAll, at, neighbours) where
 
 import qualified Data.Vector as V
 import Location (Location (..))
-import Aoc
+import qualified Direction4
 
-data Located a = Located Location a deriving (Eq, Show)
+import Aoc
+import Data.Maybe (mapMaybe)
+import Located
 
 newtype Maze a = Maze (V.Vector (V.Vector (Located a)))
 
@@ -23,5 +25,16 @@ showMaze maze visited = joinToString "\n" $ map (joinToString "" . map (showLoca
 mazeToLists :: Maze a -> [[Located a]]
 mazeToLists (Maze v) = V.toList $ fmap V.toList v
 
-findAll :: (Eq a) => Maze a -> a -> [Location]
-findAll maze c = map (\(Located l _) -> l) $ concatMap (filter (\(Located _ c') -> c' == c)) (mazeToLists maze)
+findAll :: (Eq a) => Maze a -> a -> [Located a]
+findAll maze c = concatMap (filter (\(Located _ c') -> c' == c)) (mazeToLists maze)
+
+at :: Maze a -> Location -> Maybe (Located a)
+at (Maze v) (Location x y)
+    | x < 0 || x >= lx = Nothing
+    | y < 0 || y >= ly = Nothing
+    | otherwise = Just $ (v V.! y) V.! x
+    where ly = V.length v
+          lx = if ly == 0 then 0 else V.length (V.head v)
+
+neighbours :: Maze a -> Location -> [Located a]
+neighbours maze loc = mapMaybe (at maze . (loc Direction4.+|)) Direction4.all
