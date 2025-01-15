@@ -1,4 +1,4 @@
-module Maze(Maze(..), Located(..), parse) where
+module Maze(Maze(..), Located(..), parse, showMaze) where
 
 import qualified Data.Vector as V
 import Location (Location (..))
@@ -17,8 +17,8 @@ parse make input = Maze . V.fromList $ zipWith (parseMazeLine make) [0..] input
 showLocated :: Show a => [Location] -> Located a -> String
 showLocated visited (Located loc c) = if loc `elem` visited then "\ESC[31m" ++ Prelude.show c ++ "\ESC[0m" else Prelude.show c
 
-show :: Show a => Maze a -> [Location] -> String
-show maze visited = joinToString "\n" $ map (joinToString "" . map (showLocated visited)) (mazeToLists maze)
+showMaze :: Show a => Maze a -> [Location] -> String
+showMaze maze visited = joinToString "\n" $ map (joinToString "" . map (showLocated visited)) (mazeToLists maze)
 
 mazeToLists :: Maze a -> [[Located a]]
 mazeToLists (Maze v) = V.toList $ fmap V.toList v
