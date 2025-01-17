@@ -6,7 +6,7 @@ import qualified Located
 import qualified Data.HashSet as H
 import Data.Hashable (Hashable)
 import Location (Location)
-import Direction4 (Direction4)
+import Direction4 (Direction4, sideDirs)
 import Data.Foldable (find)
 
 type Crop = Char
@@ -91,7 +91,8 @@ edgesOne maze edges plotEdge = case existing of
     Just (Edge crop' locations dir') -> map (\edge -> if edge == Edge crop' locations dir' then Edge crop' (location:locations) dir' else edge) edges
     Nothing -> Edge crop [location] direction:edges
     where (PlotEdge crop location direction) = plotEdge
-          n = map Located.location $ Maze.neighbours' maze location
+          op = Direction4.sideDirs direction
+          n = map (Located.location . fst) (filter (\(_,d) -> d `elem` op) $ Maze.neighbours'dir maze location)
           existing = find (\(Edge crop' locations dir') -> crop' == crop && dir' == direction && any (`elem` n) locations) edges
 
 sides :: Maze Crop -> Region -> Int
