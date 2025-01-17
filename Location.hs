@@ -2,7 +2,7 @@ module Location(Location(..), x ,y) where
 
 import Data.Hashable (Hashable, hashWithSalt)
 
-data Location = Location Int Int deriving (Eq,Show)
+data Location = Location Int Int deriving (Eq,Show, Ord)
 
 instance Hashable Location where
     hashWithSalt salt (Location x y) = hashWithSalt salt (x,y)

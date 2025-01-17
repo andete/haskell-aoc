@@ -1,11 +1,11 @@
-module Maze(Maze(..), Located(..), parse, showMaze, findAll, at, neighbours) where
+module Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighbours', items) where
 
 import qualified Data.Vector as V
 import Location (Location (..))
 import qualified Direction4
 
 import Aoc
-import Data.Maybe (mapMaybe)
+import Data.Maybe (mapMaybe, fromJust)
 import Located
 
 newtype Maze a = Maze (V.Vector (V.Vector (Located a)))
@@ -16,11 +16,11 @@ parseMazeLine make y line = V.fromList $ zipWith (\ x c -> Located (Location x y
 parse :: (Char -> a) -> [String] -> Maze a
 parse make input = Maze . V.fromList $ zipWith (parseMazeLine make) [0..] input
 
-showLocated :: Show a => [Location] -> Located a -> String
-showLocated visited (Located loc c) = if loc `elem` visited then "\ESC[31m" ++ Prelude.show c ++ "\ESC[0m" else Prelude.show c
+showLocated :: (a -> String) -> [Location] -> Located a -> String
+showLocated showing visited (Located loc c) = if loc `elem` visited then "\ESC[31m" ++ showing c ++ "\ESC[0m" else showing c
 
-showMaze :: Show a => Maze a -> [Location] -> String
-showMaze maze visited = joinToString "\n" $ map (joinToString "" . map (showLocated visited)) (mazeToLists maze)
+showMaze :: (a -> String) -> Maze a -> [Location] -> String
+showMaze showing maze visited = joinToString "\n" $ map (joinToString "" . map (showLocated showing visited)) (mazeToLists maze)
 
 mazeToLists :: Maze a -> [[Located a]]
 mazeToLists (Maze v) = V.toList $ fmap V.toList v
@@ -36,5 +36,24 @@ at (Maze v) (Location x y)
     where ly = V.length v
           lx = if ly == 0 then 0 else V.length (V.head v)
 
+at' :: Maze a -> Location -> Located (Maybe a)
+at' maze loc = case at maze loc of
+    Just a -> Located loc (Just (value a))
+    Nothing -> Located loc Nothing
+
 neighbours :: Maze a -> Location -> [Located a]
 neighbours maze loc = mapMaybe (at maze . (loc Direction4.+|)) Direction4.all
+
+neighbours' :: Maze a -> Location -> [Located (Maybe a)]
+neighbours' maze loc = map (at' maze . (loc Direction4.+|)) Direction4.all
+
+xIndices :: Maze a -> [Int]
+xIndices (Maze v) = [0..lx-1]
+    where lx = if V.length v == 0 then 0 else V.length (V.head v)
+
+yIndices :: Maze a -> [Int]
+yIndices (Maze v) = [0..ly-1]
+    where ly = V.length v
+
+items :: Maze a -> [Located a]
+items = concat . mazeToLists
