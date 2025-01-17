@@ -88,28 +88,28 @@ edges maze region = foldl (edgesOne maze) [] (plotEdges maze region)
 
 edgesOne :: Maze Crop -> [Edge]-> PlotEdge -> [Edge]
 edgesOne maze edges plotEdge = case existing of
-    Just (Edge crop' locations dir') -> Edge crop' (location:locations) dir':edges
+    Just (Edge crop' locations dir') -> map (\edge -> if edge == Edge crop' locations dir' then Edge crop' (location:locations) dir' else edge) edges
     Nothing -> Edge crop [location] direction:edges
     where (PlotEdge crop location direction) = plotEdge
           n = map Located.location $ Maze.neighbours' maze location
           existing = find (\(Edge crop' locations dir') -> crop' == crop && dir' == direction && any (`elem` n) locations) edges
 
 sides :: Maze Crop -> Region -> Int
-sides maze l = length $ edges maze l
+sides maze region = length $ edges maze region
 
 discounted :: Maze Crop -> Region -> Int
-discounted maze a = trace (show [ar, s]) $ ar * s
-    where ar = area a
-          s = sides maze a
+discounted maze region = trace (show [ar, s]) $ ar * s
+    where ar = area region
+          s = sides maze region
 
 day12part1 :: [String] -> Int
-day12part1 field = sum $ map (price maze) painted
+day12part1 field = sum $ map (price maze) regions
     where maze = Maze.parse id field
-          painted = paint maze
+          regions = paint maze
 
 day12part2 :: [String] -> Int
-day12part2 field = sum $ map (discounted maze) painted
+day12part2 field = sum $ map (discounted maze) regions
     where maze = Maze.parse id field
-          painted = paint maze
+          regions = paint maze
 
 main = do part1_input
