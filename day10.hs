@@ -38,13 +38,13 @@ rating maze loc
           neighbours = filter (\l -> Located.value l == i + 1) $ Maze.neighbours maze l
 
 day10part1 :: [String] -> Int
-day10part1 field = trace (show beachHeads) $ trace (Maze.showMaze maze []) $
+day10part1 field = trace (show beachHeads) $ trace (Maze.showMaze show maze []) $
     sum $ map (score maze) beachHeads
     where maze = Maze.parse (\x -> read [x] :: Int) field
           beachHeads = Maze.findAll maze 0
 
 day10part2 :: [String] -> Int
-day10part2 field = trace (show beachHeads) $ trace (Maze.showMaze maze []) $
+day10part2 field = trace (show beachHeads) $ trace (Maze.showMaze show maze []) $
     sum $ map (rating maze) beachHeads
     where maze = Maze.parse (\x -> read [x] :: Int) field
           beachHeads = Maze.findAll maze 0

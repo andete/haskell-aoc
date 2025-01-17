@@ -1,4 +1,4 @@
-module Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighbours', items) where
+module Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighbours', neighbours'dir, items) where
 
 import qualified Data.Vector as V
 import Location (Location (..))
@@ -46,6 +46,9 @@ neighbours maze loc = mapMaybe (at maze . (loc Direction4.+|)) Direction4.all
 
 neighbours' :: Maze a -> Location -> [Located (Maybe a)]
 neighbours' maze loc = map (at' maze . (loc Direction4.+|)) Direction4.all
+
+neighbours'dir :: Maze a -> Location -> [(Located (Maybe a), Direction4.Direction4)]
+neighbours'dir maze loc = map (\dir -> (at' maze (loc Direction4.+| dir), dir)) Direction4.all
 
 xIndices :: Maze a -> [Int]
 xIndices (Maze v) = [0..lx-1]
