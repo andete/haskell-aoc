@@ -21,35 +21,35 @@ data PlotEdge = PlotEdge Crop Location Direction4 deriving (Show, Eq, Ord)
 data Edge = Edge Crop [Location] Direction4 deriving (Show, Eq, Ord)
 
 part1_example1 = do
-    part1 140 "day12/example1.txt" day12part1
+    part1 140 "2024/day12/example1.txt" day12part1
 
 part1_example1a = do
-    part1 772 "day12/example1a.txt" day12part1
+    part1 772 "2024/day12/example1a.txt" day12part1
 
 part1_example2 = do
-    part1 1930 "day12/example2.txt" day12part1
+    part1 1930 "2024/day12/example2.txt" day12part1
 
 part1_input = do
-    part1 1473620 "day12/input.txt" day12part1
+    part1 1473620 "2024/day12/input.txt" day12part1
 
-part2_example1a = do part2 436 "day12/example1a.txt" day12part2
-part2_example1e = do part2 236 "day12/example1e.txt" day12part2
-part2_example1ab = do part2 368 "day12/example1ab.txt" day12part2
-part2_example2 = do part2 1206 "day12/example2.txt" day12part2
-part2_input = do part2 902620 "day12/input.txt" day12part2
+part2_example1a = do part2 436 "2024/day12/example1a.txt" day12part2
+part2_example1e = do part2 236 "2024/day12/example1e.txt" day12part2
+part2_example1ab = do part2 368 "2024/day12/example1ab.txt" day12part2
+part2_example2 = do part2 1206 "2024/day12/example2.txt" day12part2
+part2_input = do part2 902620 "2024/day12/input.txt" day12part2
 
-part2_example1test0 = do part2 4 "day12/example1.txt" (day12part2test 0)
-part2_example1test1 = do part2 4 "day12/example1.txt" (day12part2test 1)
+part2_example1test0 = do part2 4 "2024/day12/example1.txt" (day12part2test 0)
+part2_example1test1 = do part2 4 "2024/day12/example1.txt" (day12part2test 1)
 
-part2_example1test2 = do part2 8 "day12/example1.txt" (day12part2test 2)
-part2_example1test3 = do part2 4 "day12/example1.txt" (day12part2test 3)
-part2_example1test4 = do part2 4 "day12/example1.txt" (day12part2test 4)
+part2_example1test2 = do part2 8 "2024/day12/example1.txt" (day12part2test 2)
+part2_example1test3 = do part2 4 "2024/day12/example1.txt" (day12part2test 3)
+part2_example1test4 = do part2 4 "2024/day12/example1.txt" (day12part2test 4)
 
-part2_example1atest0 = do part2 4 "day12/example1a.txt" (day12part2test 0)
-part2_example1atest1 = do part2 4 "day12/example1a.txt" (day12part2test 1)
-part2_example1atest2 = do part2 4 "day12/example1a.txt" (day12part2test 2)
-part2_example1atest3 = do part2 4 "day12/example1a.txt" (day12part2test 3)
-part2_example1atest4 = do part2 20 "day12/example1a.txt" (day12part2test 4)
+part2_example1atest0 = do part2 4 "2024/day12/example1a.txt" (day12part2test 0)
+part2_example1atest1 = do part2 4 "2024/day12/example1a.txt" (day12part2test 1)
+part2_example1atest2 = do part2 4 "2024/day12/example1a.txt" (day12part2test 2)
+part2_example1atest3 = do part2 4 "2024/day12/example1a.txt" (day12part2test 3)
+part2_example1atest4 = do part2 20 "2024/day12/example1a.txt" (day12part2test 4)
 
 region :: [Located Crop] -> Region2
 region plots = Region2 crop (map Located.location plots)

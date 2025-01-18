@@ -31,26 +31,26 @@ blinkAll2 :: Stones -> Stones
 blinkAll2 xn = foldl (blinkOne' xn) H.empty (H.keys xn)
 
 part1_example = do
-    part1 7 "day11/example.txt" (day11part1 1)
+    part1 7 "2024/day11/example.txt" (day11part1 1)
 
 
 part1_example2 = do
-    part1 22 "day11/example2.txt" (day11part1 6)
+    part1 22 "2024/day11/example2.txt" (day11part1 6)
 
 part1_input = do
-    part1 183248 "day11/input.txt" (day11part1 25)
+    part1 183248 "2024/day11/input.txt" (day11part1 25)
 
 part2_example = do
-    part2 7 "day11/example.txt" (day11part2 1)
+    part2 7 "2024/day11/example.txt" (day11part2 1)
 
 part2_example2 = do
-    part2 22 "day11/example2.txt" (day11part2 6)
+    part2 22 "2024/day11/example2.txt" (day11part2 6)
 
 part2_input25 = do
-    part2 183248 "day11/input.txt" (day11part2 25)
+    part2 183248 "2024/day11/input.txt" (day11part2 25)
 
 part2_input75 = do
-    part2 218811774248729 "day11/input.txt" (day11part2 75)
+    part2 218811774248729 "2024/day11/input.txt" (day11part2 75)
 
 day11part1 :: Int -> [String] -> Int
 day11part1 times field = length $ last $ take (times+1) $ iterate blinkAll rocks

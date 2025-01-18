@@ -37,16 +37,16 @@ fixAll rules update = foldl fixRule update rules
 
 part1_example :: IO ()
 part1_example = do
-    part1 143 "day05/example.txt" day05part1
+    part1 143 "2024/day05/example.txt" day05part1
 
 part1_input = do
-    part1 7074 "day05/input.txt" day05part1
+    part1 7074 "2024/day05/input.txt" day05part1
 
 part2_example = do
-    part2 123 "day05/example.txt" day05part2
+    part2 123 "2024/day05/example.txt" day05part2
 
 part2_input = do
-    part2 4828 "day05/input.txt" day05part2
+    part2 4828 "2024/day05/input.txt" day05part2
 
 day05part1 :: [String] -> Integer
 day05part1 field = let (rules, updates) = parse field in

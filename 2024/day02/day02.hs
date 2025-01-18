@@ -5,16 +5,16 @@ decreasing xs = and $ zipWith (>=) xs (tail xs)
 diffOk xs = and $ zipWith (\x y -> let z = abs (x - y) in z >= 1 && z <= 3) xs (tail xs)
 
 part1_example = do
-    part1 2 "day02/example.txt" day02part1
+    part1 2 "2024/day02/example.txt" day02part1
 
 part1_input = do
-    part1 479 "day02/input.txt" day02part1
+    part1 479 "2024/day02/input.txt" day02part1
 
 part2_example = do
-    part2 4 "day02/example.txt" day02part2
+    part2 4 "2024/day02/example.txt" day02part2
 
 part2_input = do
-    part2 531 "day02/input.txt" day02part2
+    part2 531 "2024/day02/input.txt" day02part2
 
 safeReport :: (Ord a, Num a) => [a] -> Bool
 safeReport xs = (increasing xs || decreasing xs) && diffOk xs

@@ -9,16 +9,16 @@ import Test.HUnit
 type Location = Location.Location
 
 part1_example = do
-    part1 14 "day08/example.txt" day08part1
+    part1 14 "2024/day08/example.txt" day08part1
 
 part1_input = do
-    part1 351 "day08/input.txt" day08part1
+    part1 351 "2024/day08/input.txt" day08part1
 
 part2_example = do
-    part2 34 "day08/example.txt" day08part2
+    part2 34 "2024/day08/example.txt" day08part2
 
 part2_input = do
-    part2 1259 "day08/input.txt" day08part2
+    part2 1259 "2024/day08/input.txt" day08part2
 
 antinodesPart1 :: CharMaze.CharMaze -> [Char] -> [Location]
 antinodesPart1 maze chars = nub $ concatMap (antinodesPart1ForAntennaType maze) chars

@@ -2,18 +2,18 @@ import Util.Aoc
 import Data.Char (isDigit)
 
 part1_example = do
-    part1 161 "day03/example.txt" day03part1
+    part1 161 "2024/day03/example.txt" day03part1
 
 part1_input = do
-    part1 160672468 "day03/input.txt" day03part1
+    part1 160672468 "2024/day03/input.txt" day03part1
 
 
 
 part2_example = do
-    part1 48 "day03/example2.txt" day03part2
+    part1 48 "2024/day03/example2.txt" day03part2
 
 part2_input = do
-    part1 84893551 "day03/input.txt" day03part2
+    part1 84893551 "2024/day03/input.txt" day03part2
 
 data Token = Mul | Number Integer | Comma | Close | Other | Do | Dont
     deriving (Show, Eq)

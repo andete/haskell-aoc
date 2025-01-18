@@ -14,16 +14,16 @@ import qualified Data.HashMap.Internal.Array as Hashset
 type Direction = Direction4.Direction4
 
 part1_example = do
-    part1 41 "day06/example.txt" day06part1
+    part1 41 "2024/day06/example.txt" day06part1
 
 part1_input = do
-    part1 5153 "day06/input.txt" day06part1
+    part1 5153 "2024/day06/input.txt" day06part1
 
 part2_example = do
-    part2 6 "day06/example.txt" day06part2
+    part2 6 "2024/day06/example.txt" day06part2
 
 part2_input = do
-    part2 1711 "day06/input.txt" day06part2
+    part2 1711 "2024/day06/input.txt" day06part2
 
 moves :: CharMaze -> Maybe Location -> Direction -> [Location] -> [Location]
 moves _ Nothing _ visited = nub visited

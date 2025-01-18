@@ -3,17 +3,17 @@ import Debug.Trace (trace)
 import Text.Printf (printf)
 
 part1_example = do
-    part1 3749 "day07/example.txt" day07part1
+    part1 3749 "2024/day07/example.txt" day07part1
 
 part1_input = do
-    part1 850435817339 "day07/input.txt" day07part1
+    part1 850435817339 "2024/day07/input.txt" day07part1
 
 
 part2_example = do
-    part2 11387 "day07/example.txt" day07part2
+    part2 11387 "2024/day07/example.txt" day07part2
 
 part2_input = do
-    part2 104824810233437 "day07/input.txt" day07part2
+    part2 104824810233437 "2024/day07/input.txt" day07part2
 
 
 parse:: String -> (Integer, [Integer])

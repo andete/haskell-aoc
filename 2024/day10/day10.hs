@@ -8,19 +8,19 @@ import qualified Util.Located as Located
 type Located = Located.Located
 
 part1_example = do
-    part1 1 "day10/example.txt" day10part1
+    part1 1 "2024/day10/example.txt" day10part1
 
 part1_example2 = do
-    part1 36 "day10/example2.txt" day10part1
+    part1 36 "2024/day10/example2.txt" day10part1
 
 part1_input = do
-    part1 496 "day10/input.txt" day10part1
+    part1 496 "2024/day10/input.txt" day10part1
 
 part2_example2 = do
-    part2 81 "day10/example2.txt" day10part2
+    part2 81 "2024/day10/example2.txt" day10part2
 
 part2_input = do
-    part2 1120 "day10/input.txt" day10part2
+    part2 1120 "2024/day10/input.txt" day10part2
 
 summits :: Maze.Maze Int -> Located Int -> [Located Int]
 summits maze loc 

@@ -4,16 +4,16 @@ import Util.Aoc
 import Data.List (nub, elemIndex, find)
 
 part1_example = do
-    part1 1928 "day09/example.txt" day09part1
+    part1 1928 "2024/day09/example.txt" day09part1
 
 part1_input = do
-    part1 6216544403458 "day09/input.txt" day09part1
+    part1 6216544403458 "2024/day09/input.txt" day09part1
 
 part2_example = do
-    part2 2858 "day09/example.txt" day09part2
+    part2 2858 "2024/day09/example.txt" day09part2
 
 part2_input = do
-    part2 6237075041489 "day09/input.txt" day09part2
+    part2 6237075041489 "2024/day09/input.txt" day09part2
 
 makeMemoryMap :: String -> [Maybe Int]
 makeMemoryMap input =

@@ -4,17 +4,17 @@ import Text.Printf (printf)
 import Data.Bifunctor (bimap)
 
 part1_example = do
-    part1 18 "day04/example.txt" day04part1
+    part1 18 "2024/day04/example.txt" day04part1
 
 part1_input = do
-    part1 2532 "day04/input.txt" day04part1
+    part1 2532 "2024/day04/input.txt" day04part1
 
 
 part2_example = do
-    part2 9 "day04/example.txt" day04part2
+    part2 9 "2024/day04/example.txt" day04part2
 
 part2_input = do
-    part2 1941 "day04/input.txt" day04part2
+    part2 1941 "2024/day04/input.txt" day04part2
 
 charAt :: [String] -> Int -> Int -> Char
 charAt field x y
