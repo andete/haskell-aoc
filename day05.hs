@@ -1,6 +1,6 @@
 
 import Data.List.Split (splitOn)
-import Aoc
+import Util.Aoc
 import Debug.Trace
 import Data.List (elemIndex)
 import Text.Printf (printf)

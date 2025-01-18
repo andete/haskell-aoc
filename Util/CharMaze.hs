@@ -1,9 +1,9 @@
-module CharMaze(CharMaze(..), LocatedChar(..), parse, show, find, findAll, at, set, chars, validLocation) where
+module Util.CharMaze(CharMaze(..), LocatedChar(..), parse, show, find, findAll, at, set, chars, validLocation) where
 
-import Location (Location (..))
-import qualified Location
+import Util.Location (Location (..))
+import qualified Util.Location
 import Prelude hiding (show)
-import Aoc (joinToString)
+import Util.Aoc (joinToString)
 import Data.List (nub)
 
 data LocatedChar = LocatedChar Location Char deriving (Eq, Show)

@@ -1,11 +1,12 @@
 import Debug.Trace (trace)
 
-import qualified CharMaze
-import Aoc
-import Location
+import qualified Util.CharMaze as CharMaze
+import Util.Aoc
+import qualified Util.Location as Location
 import Data.List (nub)
 import Test.HUnit
 
+type Location = Location.Location
 
 part1_example = do
     part1 14 "day08/example.txt" day08part1
@@ -37,8 +38,8 @@ antinodesPart1ForAntennaPair :: CharMaze.CharMaze -> Location -> Location -> [Lo
 antinodesPart1ForAntennaPair maze loc1 loc2 = filter (CharMaze.validLocation maze) [antinode1, antinode2]
     where dx = Location.x loc2 - Location.x loc1
           dy = Location.y loc2 - Location.y loc1
-          antinode1 = Location (Location.x loc1 - dx) (Location.y loc1 - dy)
-          antinode2 = Location (Location.x loc2 + dx) (Location.y loc2 + dy)
+          antinode1 = Location.Location (Location.x loc1 - dx) (Location.y loc1 - dy)
+          antinode2 = Location.Location (Location.x loc2 + dx) (Location.y loc2 + dy)
 
 antinodesPart2ForAntennaPair :: CharMaze.CharMaze -> Location -> Location -> [Location]
 antinodesPart2ForAntennaPair maze loc1 loc2 = 
@@ -47,8 +48,8 @@ antinodesPart2ForAntennaPair maze loc1 loc2 =
     
     where dx = Location.x loc2 - Location.x loc1
           dy = Location.y loc2 - Location.y loc1
-          antinodes1 = map (\q -> Location (Location.x loc1 - q * dx) (Location.y loc1 - q * dy)) [0..]
-          antinodes2 = map (\q -> Location (Location.x loc2 + q * dx) (Location.y loc2 + q * dy)) [0..]
+          antinodes1 = map (\q -> Location.Location (Location.x loc1 - q * dx) (Location.y loc1 - q * dy)) [0..]
+          antinodes2 = map (\q -> Location.Location (Location.x loc2 + q * dx) (Location.y loc2 + q * dy)) [0..]
 
 day08part1 :: [String] -> Int
 day08part1 field = trace (CharMaze.show maze []) $ trace (show chars) $

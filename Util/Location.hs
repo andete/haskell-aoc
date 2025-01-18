@@ -1,4 +1,4 @@
-module Location(Location(..), x ,y) where
+module Util.Location(Location(..), x ,y) where
 
 import Data.Hashable (Hashable, hashWithSalt)
 

@@ -1,5 +1,5 @@
-module Direction4(Direction4(..), (+|), rotate180, rotate90, rotate90cc, all, sideDirs) where
-import Location (Location (..))
+module Util.Direction4(Direction4(..), (+|), rotate180, rotate90, rotate90cc, all, sideDirs) where
+import Util.Location (Location (..))
 import Data.Hashable (Hashable (hashWithSalt))
 import Prelude hiding (all)
 

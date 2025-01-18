@@ -1,9 +1,11 @@
-import Aoc
-import qualified Maze
+import Util.Aoc
+import qualified Util.Maze as Maze
 import Debug.Trace (trace)
-import Location
+import Util.Location
 import Data.List (nub)
-import Located
+import qualified Util.Located as Located
+
+type Located = Located.Located
 
 part1_example = do
     part1 1 "day10/example.txt" day10part1
@@ -24,7 +26,7 @@ summits :: Maze.Maze Int -> Located Int -> [Located Int]
 summits maze loc 
     | i == 9 = [loc]
     | otherwise = concatMap (summits maze) neighbours
-    where Located l i = loc
+    where Located.Located l i = loc
           neighbours = filter (\l -> Located.value l == i + 1) $ Maze.neighbours maze l
           
 score :: Maze.Maze Int -> Located Int -> Int
@@ -34,7 +36,7 @@ rating :: Maze.Maze Int -> Located Int -> Int
 rating maze loc 
     | i == 9 = 1
     | otherwise = sum $ map (rating maze) neighbours
-    where Located l i = loc
+    where Located.Located l i = loc
           neighbours = filter (\l -> Located.value l == i + 1) $ Maze.neighbours maze l
 
 day10part1 :: [String] -> Int

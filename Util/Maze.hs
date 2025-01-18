@@ -1,12 +1,12 @@
-module Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items) where
+module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items) where
 
 import qualified Data.Vector as V
-import Location (Location (..))
-import qualified Direction4
+import Util.Location (Location (..))
+import qualified Util.Direction4 as Direction4
 
-import Aoc
+import Util.Aoc
 import Data.Maybe (mapMaybe, fromJust)
-import Located
+import Util.Located
 
 newtype Maze a = Maze (V.Vector (V.Vector (Located a)))
 

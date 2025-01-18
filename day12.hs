@@ -1,14 +1,18 @@
-import Aoc
-import Maze
+import Util.Aoc
+import qualified Util.Maze as Maze
 import Data.List (nub, sort)
 import Debug.Trace (trace)
-import qualified Located
+import qualified Util.Located as Located
 import qualified Data.HashSet as H
 import Data.Hashable (Hashable)
-import Location (Location)
-import Direction4 (Direction4, sideDirs)
+import Util.Location (Location)
+import Util.Direction4 (Direction4, sideDirs)
 import Data.Foldable (find)
 import Data.Maybe (isJust, fromJust)
+import qualified Util.Maze as Maze
+
+type Located = Located.Located
+type Maze = Maze.Maze
 
 type Crop = Char
 type Region = [Located Crop]
@@ -79,7 +83,7 @@ area = length
 perimeter :: Maze Crop -> Region -> Int
 perimeter maze l = length n
     where crop = Located.value (head l)
-          n = concatMap (filter (\(Located _ c) -> c /= Just crop) . Maze.neighbours' maze . Located.location) l
+          n = concatMap (filter (\(Located.Located _ c) -> c /= Just crop) . Maze.neighbours' maze . Located.location) l
 
 price :: Maze Crop -> Region -> Int
 price maze a = ar * p
@@ -98,7 +102,7 @@ plotEdgeOne :: Maze Crop -> Located Crop -> [PlotEdge]
 plotEdgeOne maze plot = map (PlotEdge crop location) edgeLocations
     where crop = Located.value plot
           location = Located.location plot
-          edgeLocations = map snd $ filter (\(p, _) -> Located.value p /= Just crop) (neighbours'dir maze (Located.location plot))
+          edgeLocations = map snd $ filter (\(p, _) -> Located.value p /= Just crop) (Maze.neighbours'dir maze (Located.location plot))
 
 
 -- edges are PlotEdges, but grouped by being neighbours

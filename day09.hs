@@ -1,6 +1,6 @@
 import Data.Maybe (isJust, isNothing)
 import Debug.Trace (trace)
-import Aoc
+import Util.Aoc
 import Data.List (nub, elemIndex, find)
 
 part1_example = do

@@ -1,6 +1,4 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Use section" #-}
-import Aoc
+import Util.Aoc
 import Debug.Trace
 import Text.Printf (printf)
 import Data.Bifunctor (bimap)

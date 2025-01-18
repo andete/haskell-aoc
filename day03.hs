@@ -1,4 +1,4 @@
-import Aoc
+import Util.Aoc
 import Data.Char (isDigit)
 
 part1_example = do

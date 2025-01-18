@@ -1,6 +1,4 @@
-import Aoc
-import Language.Haskell.TH (safe)
-
+import Util.Aoc
 
 increasing xs = and $ zipWith (<=) xs (tail xs)
 decreasing xs = and $ zipWith (>=) xs (tail xs)

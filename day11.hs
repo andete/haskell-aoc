@@ -1,4 +1,4 @@
-import Aoc
+import Util.Aoc
 import Data.List (iterate', sort)
 import qualified Data.HashMap.Internal.Strict as H
 import Data.Maybe (fromMaybe)

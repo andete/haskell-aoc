@@ -1,8 +1,7 @@
 import System.IO
-import Language.Haskell.TH (listT)
 import Data.List (sort)
 import Control.Exception (assert)
-import Aoc
+import Util.Aoc
 
 part1_example = do
     part1 11 "day01/example.txt" day01part1

@@ -1,6 +1,6 @@
-module Located(Located(..), value, location) where
+module Util.Located(Located(..), value, location) where
 
-import Location
+import Util.Location
 import Data.Hashable (Hashable (hashWithSalt))
 
 data Located a = Located Location a deriving (Eq, Show, Ord)

@@ -1,5 +1,4 @@
-{-# OPTIONS_GHC -Wno-overlapping-patterns #-}
-import Aoc
+import Util.Aoc
 import Debug.Trace (trace)
 import Text.Printf (printf)
 

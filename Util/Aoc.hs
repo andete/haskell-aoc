@@ -1,4 +1,4 @@
-module Aoc(readLines, listToNums, part, part1, part2, joinToString) where
+module Util.Aoc(readLines, listToNums, part, part1, part2, joinToString) where
 
 import qualified Data.Vector as V
 
