@@ -1,4 +1,4 @@
-module Util.Location(Location(..), x ,y) where
+module Util.Location(Location(..), x ,y, fromList) where
 
 import Data.Hashable (Hashable, hashWithSalt)
 
@@ -20,3 +20,6 @@ x (Location x _) = x
 
 y :: Location -> Int
 y (Location _ y) = y
+
+fromList :: [Int] -> Location
+fromList [x,y] = Location x y
