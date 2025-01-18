@@ -1,4 +1,4 @@
-module Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighbours', neighbours'dir, items) where
+module Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items) where
 
 import qualified Data.Vector as V
 import Location (Location (..))
@@ -43,6 +43,14 @@ at' maze loc = case at maze loc of
 
 neighbours :: Maze a -> Location -> [Located a]
 neighbours maze loc = mapMaybe (at maze . (loc Direction4.+|)) Direction4.all
+
+frit :: (Located (Maybe a), Direction4.Direction4) -> Maybe (Located a, Direction4.Direction4)
+frit (Located loc a, dir) = case a of
+    Just a -> Just (Located loc a, dir)
+    Nothing -> Nothing
+
+neighboursDir :: Maze a -> Location -> [(Located a, Direction4.Direction4)]
+neighboursDir maze loc = mapMaybe (frit . (\dir -> (at' maze (loc Direction4.+| dir), dir))) Direction4.all
 
 neighbours' :: Maze a -> Location -> [Located (Maybe a)]
 neighbours' maze loc = map (at' maze . (loc Direction4.+|)) Direction4.all

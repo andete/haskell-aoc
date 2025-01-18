@@ -8,11 +8,12 @@ import Data.Hashable (Hashable)
 import Location (Location)
 import Direction4 (Direction4, sideDirs)
 import Data.Foldable (find)
+import Data.Maybe (isJust, fromJust)
 
 type Crop = Char
 type Region = [Located Crop]
-data PlotEdge = PlotEdge Crop Location Direction4 deriving (Show, Eq)
-data Edge = Edge Crop [Location] Direction4 deriving (Show, Eq)
+data PlotEdge = PlotEdge Crop Location Direction4 deriving (Show, Eq, Ord)
+data Edge = Edge Crop [Location] Direction4 deriving (Show, Eq, Ord)
 
 part1_example1 = do
     part1 140 "day12/example1.txt" day12part1
@@ -31,6 +32,19 @@ part2_example1e = do part2 236 "day12/example1e.txt" day12part2
 part2_example1ab = do part2 368 "day12/example1ab.txt" day12part2
 part2_example2 = do part2 1206 "day12/example2.txt" day12part2
 part2_input = do part2 902620 "day12/input.txt" day12part2
+
+part2_example1test0 = do part2 4 "day12/example1.txt" (day12part2test 0)
+part2_example1test1 = do part2 4 "day12/example1.txt" (day12part2test 1)
+
+part2_example1test2 = do part2 8 "day12/example1.txt" (day12part2test 2)
+part2_example1test3 = do part2 4 "day12/example1.txt" (day12part2test 3)
+part2_example1test4 = do part2 4 "day12/example1.txt" (day12part2test 4)
+
+part2_example1atest0 = do part2 4 "day12/example1a.txt" (day12part2test 0)
+part2_example1atest1 = do part2 4 "day12/example1a.txt" (day12part2test 1)
+part2_example1atest2 = do part2 4 "day12/example1a.txt" (day12part2test 2)
+part2_example1atest3 = do part2 4 "day12/example1a.txt" (day12part2test 3)
+part2_example1atest4 = do part2 20 "day12/example1a.txt" (day12part2test 4)
 
 
 -- recognize regions of the same crop by a painting algorithm
@@ -84,22 +98,21 @@ plotEdgeOne maze plot = map (PlotEdge crop location) edgeLocations
 
 -- edges are PlotEdges, but grouped by being neighbours
 edges :: Maze Crop -> Region -> [Edge]
-edges maze region = foldl (edgesOne maze) [] (plotEdges maze region)
+edges maze region = foldl (edgesOne maze) [] (sort $ plotEdges maze region)
 
 edgesOne :: Maze Crop -> [Edge]-> PlotEdge -> [Edge]
-edgesOne maze edges plotEdge = case existing of
+edgesOne maze edges plotEdge = case existingEdge of
     Just (Edge crop' locations dir') -> map (\edge -> if edge == Edge crop' locations dir' then Edge crop' (location:locations) dir' else edge) edges
     Nothing -> Edge crop [location] direction:edges
     where (PlotEdge crop location direction) = plotEdge
-          op = Direction4.sideDirs direction
-          n = map (Located.location . fst) (filter (\(_,d) -> d `elem` op) $ Maze.neighbours'dir maze location)
-          existing = find (\(Edge crop' locations dir') -> crop' == crop && dir' == direction && any (`elem` n) locations) edges
+          n = map Located.location $ Maze.neighbours maze location
+          existingEdge = find (\(Edge crop' locations dir') -> crop' == crop && dir' == direction && any (`elem` locations) n) edges
 
 sides :: Maze Crop -> Region -> Int
 sides maze region = length $ edges maze region
 
 discounted :: Maze Crop -> Region -> Int
-discounted maze region = trace (show [ar, s]) $ ar * s
+discounted maze region = ar * s
     where ar = area region
           s = sides maze region
 
@@ -113,4 +126,12 @@ day12part2 field = sum $ map (discounted maze) regions
     where maze = Maze.parse id field
           regions = paint maze
 
-main = do part1_input
+day12part2test :: Int -> [String] -> Int
+day12part2test regionIndex field = trace (show edgePs) $ trace (Maze.showMaze (:[]) maze (map Located.location region)) $
+    sides maze region
+    where maze = Maze.parse id field
+          regions = paint maze
+          region = regions !! regionIndex
+          edgePs = edges maze region
+
+main = do part2_input
