@@ -1,5 +1,4 @@
 import Util.Aoc
-import qualified Util.Maze as Maze
 import Data.List (nub, sort)
 import Debug.Trace (trace)
 import qualified Util.Located as Located
