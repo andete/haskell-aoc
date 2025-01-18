@@ -12,6 +12,8 @@ import Data.Maybe (isJust, fromJust)
 
 type Crop = Char
 type Region = [Located Crop]
+-- todo: use Region2 isof Region as it is more strict, for Region it is implied that all locateds are the same crop
+data Region2 = Region2 Crop [Location]
 data PlotEdge = PlotEdge Crop Location Direction4 deriving (Show, Eq, Ord)
 data Edge = Edge Crop [Location] Direction4 deriving (Show, Eq, Ord)
 
@@ -46,6 +48,9 @@ part2_example1atest2 = do part2 4 "day12/example1a.txt" (day12part2test 2)
 part2_example1atest3 = do part2 4 "day12/example1a.txt" (day12part2test 3)
 part2_example1atest4 = do part2 20 "day12/example1a.txt" (day12part2test 4)
 
+region :: [Located Crop] -> Region2
+region plots = Region2 crop (map Located.location plots)
+    where crop = Located.value (head plots)
 
 -- recognize regions of the same crop by a painting algorithm
 paint :: Maze Crop -> [Region]
