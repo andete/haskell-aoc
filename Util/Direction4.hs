@@ -1,4 +1,4 @@
-module Util.Direction4(Direction4(..), (+|), rotate180, rotate90, rotate90cc, all, sideDirs) where
+module Util.Direction4(Direction4(..), (+|), rotate180, rotate90, rotate90cc, all, sideDirs, fromChar) where
 import Util.Location (Location (..))
 import Data.Hashable (Hashable (hashWithSalt))
 import Prelude hiding (all)
@@ -35,3 +35,9 @@ sideDirs North = [East, West]
 sideDirs East = [North, South]
 sideDirs South = [East, West]
 sideDirs West = [North, South]
+
+fromChar :: Char -> Direction4
+fromChar '^' = North
+fromChar '>' = East
+fromChar 'v' = South
+fromChar '<' = West

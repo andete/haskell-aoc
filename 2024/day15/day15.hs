@@ -13,18 +13,12 @@ type Maze = Maze.Maze Char
 type Located = Located.Located Char
 type Location = Location.Location
 
-charToDirection :: Char -> Direction
-charToDirection '^' = Direction.North
-charToDirection '>' = Direction.East
-charToDirection 'v' = Direction.South
-charToDirection '<' = Direction.West
-
 parse :: [String] -> (Maze, [Direction])
 parse s = (maze, moves)
     where pos = fromJust $ elemIndex "" s
           mazeLines = take pos s
           maze = Maze.parse id mazeLines
-          moves = map charToDirection $ concat $ drop (pos + 1) s
+          moves = map Direction.fromChar $ concat $ drop (pos + 1) s
 
 moveMazeItem :: Char -> Location -> Location -> Maze -> Maybe Maze
 moveMazeItem item targetLocation sourceLocation maze = Just $ Maze.set item targetLocation $ Maze.set '.' sourceLocation maze
