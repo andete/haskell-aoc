@@ -1,4 +1,4 @@
-module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items) where
+module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items, set) where
 
 import qualified Data.Vector as V
 import Util.Location (Location (..))
@@ -68,3 +68,6 @@ yIndices (Maze v) = [0..ly-1]
 
 items :: Maze a -> [Located a]
 items = concat . mazeToLists
+
+set :: a -> Location -> Maze a -> Maze a
+set newC (Location x y) (Maze v)  = Maze $ v V.// [(y, (v V.! y) V.// [(x, Located (Location x y) newC)])]

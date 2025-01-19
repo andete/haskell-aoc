@@ -26,11 +26,14 @@ parse s = (maze, moves)
           maze = Maze.parse id mazeLines
           moves = map charToDirection $ concat $ drop (pos + 1) s
 
+moveMazeItem :: Char -> Location -> Location -> Maze -> Maybe Maze
+moveMazeItem item targetLocation sourceLocation maze = Just $ Maze.set item targetLocation $ Maze.set '.' sourceLocation maze
+
 move :: Maze -> Located -> Direction -> Maybe Maze
 move maze itemLocated direction = case targetItem of
     '#' -> Nothing
     '.' -> Just $ Maze.set item targetLocation $ Maze.set '.' itemLocation maze
-    'O' -> move maze targetLocated direction >>= \newMaze -> Just ((Maze.set item targetLocation . Maze.set '.' itemLocation) newMaze)
+    'O' -> move maze targetLocated direction >>= moveMazeItem item targetLocation itemLocation
     _ -> error "Unknown item"
     where itemLocation = Located.location itemLocated
           item = Located.value itemLocated
