@@ -30,9 +30,7 @@ move :: Maze -> Located -> Direction -> Maybe Maze
 move maze itemLocated direction = case targetItem of
     '#' -> Nothing
     '.' -> Just $ Maze.set item targetLocation $ Maze.set '.' itemLocation maze
-    'O' -> case move maze targetLocated direction of -- todo can we use a monad here?
-             Just newMaze -> Just $ Maze.set item targetLocation $ Maze.set '.' itemLocation newMaze
-             Nothing -> Nothing
+    'O' -> move maze targetLocated direction >>= \newMaze -> Just ((Maze.set item targetLocation . Maze.set '.' itemLocation) newMaze)
     _ -> error "Unknown item"
     where itemLocation = Located.location itemLocated
           item = Located.value itemLocated
