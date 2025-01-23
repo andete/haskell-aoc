@@ -41,28 +41,28 @@ type PriorityQueue a = Q.PSQ (Node a) Int
 type ClosedSet a = HS.HashSet (Node a)
 
 path :: (Eq a, Hashable a, Ord a) => AStar a -> [a]
-path astar =
-    if immediatelyDone then [start] else path' astar gScore fScore openSet closedSet
-    where start = getStart astar
-          cost = getCost astar
-          heuristic = getHeuristic astar start
+path aStar =
+    if immediatelyDone then [start] else path' aStar gScore fScore openSet closedSet
+    where start = getStart aStar
+          cost = getCost aStar
+          heuristic = getHeuristic aStar start
           startNode = Node start Nothing
-          immediatelyDone = getGoal astar start [start]
+          immediatelyDone = getGoal aStar start [start]
           gScore = H.singleton startNode 0
           fScore = H.singleton startNode heuristic
           openSet = Q.singleton startNode heuristic
           closedSet = HS.empty
 
 path' :: (Eq a, Hashable a, Ord a) => AStar a -> Score a -> Score a -> PriorityQueue a -> ClosedSet a -> [a]
-path' astar gScore fScore openSet closedSet
+path' aStar gScore fScore openSet closedSet
   | Q.null openSet = []
   | goal (value current) path = reverse (value current : path)
-  | otherwise = path' astar gScore'' fScore'' openSet'' closedSet'
+  | otherwise = path' aStar gScore'' fScore'' openSet'' closedSet'
   where
-      goal = getGoal astar
-      cost = getCost astar
-      neighbours = getNeighbours astar
-      heuristic = getHeuristic astar
+      goal = getGoal aStar
+      cost = getCost aStar
+      neighbours = getNeighbours aStar
+      heuristic = getHeuristic aStar
       (current :-> _, openSet') = fromJust $ Q.minView openSet
       path = getPath current
       closedSet' = HS.insert current closedSet
