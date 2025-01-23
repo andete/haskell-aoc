@@ -13,6 +13,8 @@ data Node a = Node a (Maybe (Node a))
 value :: Node a -> a
 value (Node a _) = a
 
+-- explicit Eq and Hashable implementations to avoid recursive calls
+
 instance Eq a => Eq (Node a) where
   (Node a Nothing) == (Node b (Just _)) = False
   (Node a (Just _)) == (Node b Nothing) = False
@@ -42,15 +44,13 @@ path :: (Eq a, Hashable a, Ord a) => AStar a -> [a]
 path astar =
     if immediatelyDone then [start] else path' astar gScore fScore openSet closedSet
     where start = getStart astar
-          goal = getGoal astar
           cost = getCost astar
-          neighbours = getNeighbours astar
-          heuristic = getHeuristic astar
+          heuristic = getHeuristic astar start
           startNode = Node start Nothing
-          immediatelyDone = goal start [start]
+          immediatelyDone = getGoal astar start [start]
           gScore = H.singleton startNode 0
-          fScore = H.singleton startNode (heuristic start)
-          openSet = Q.singleton startNode (heuristic start)
+          fScore = H.singleton startNode heuristic
+          openSet = Q.singleton startNode heuristic
           closedSet = HS.empty
 
 path' :: (Eq a, Hashable a, Ord a) => AStar a -> Score a -> Score a -> PriorityQueue a -> ClosedSet a -> [a]
