@@ -18,8 +18,7 @@ value (Node a _) = a
 -- explicit Eq and Hashable implementations to avoid recursive calls
 
 instance Show a => Show (Node a) where
-  show (Node a Nothing) = show a
-  show (Node a (Just n)) = show a ++ " -> " ++ show (value n)
+  show (Node a _) = "Node " ++ show a
 
 instance Eq a => Eq (Node a) where
   (Node a Nothing) == (Node b (Just _)) = False
@@ -32,13 +31,16 @@ instance Hashable a => Hashable (Node a) where
     hashWithSalt s (Node a (Just n)) = s `hashWithSalt` a `hashWithSalt` value n
 
 instance Ord a => Ord (Node a) where
-    compare (Node a _) (Node b _) = compare a b
+    compare (Node a Nothing) (Node b Nothing) = compare a b
+    compare (Node a Nothing) (Node b (Just (Node x _))) = compare a b <> compare Nothing (Just x)
+    compare (Node a (Just (Node x _))) (Node b Nothing) = compare a b <> compare (Just x) Nothing
+    compare (Node a (Just (Node x _))) (Node b (Just (Node y _))) = compare a b <> compare x y
 
 data AStar a = AStar {
     getStart :: a,
-    getGoal :: a -> [a] -> Bool,
+    getGoal :: a -> Bool,
     getCost :: a -> a -> Int,
-    getNeighbours :: a -> [a] -> [a],
+    getNeighbours :: a -> [a],
     getHeuristic :: a -> Int
 }
 
@@ -46,23 +48,23 @@ type Score a = H.HashMap (Node a) Int
 type PriorityQueue a = Q.PSQ (Node a) Int
 type ClosedSet a = HS.HashSet (Node a)
 
-path :: (Eq a, Hashable a, Ord a, Show a) => AStar a -> [a]
+path :: (Eq a, Hashable a, Show a, Ord a) => AStar a -> [a]
 path aStar =
     if immediatelyDone then [start] else path' aStar gScore fScore openSet closedSet
     where start = getStart aStar
           cost = getCost aStar
           heuristic = getHeuristic aStar start
           startNode = Node start Nothing
-          immediatelyDone = getGoal aStar start [start]
+          immediatelyDone = getGoal aStar start
           gScore = H.singleton startNode 0
           fScore = H.singleton startNode (0 + heuristic)
           openSet = Q.singleton startNode (0 + heuristic)
           closedSet = HS.empty
 
-path' :: (Eq a, Hashable a, Ord a, Show a) => AStar a -> Score a -> Score a -> PriorityQueue a -> ClosedSet a -> [a]
+path' :: (Eq a, Hashable a, Show a, Ord a) => AStar a -> Score a -> Score a -> PriorityQueue a -> ClosedSet a -> [a]
 path' aStar gScore fScore openSet closedSet
   | Q.null openSet = []
-  | goal (value current) path = reverse (value current : path)
+  | goal (value current) = reverse (getPath current)
   | otherwise = path' aStar gScore'' fScore'' openSet'' closedSet'
   where
       goal = getGoal aStar
@@ -70,15 +72,14 @@ path' aStar gScore fScore openSet closedSet
       neighbours = getNeighbours aStar
       heuristic = getHeuristic aStar
       (current :-> _, openSet') = fromJust $ Q.minView openSet
-      path = getPath current
       closedSet' = HS.insert current closedSet
       score = gScore H.! current
       gScore' = H.delete current gScore
       fScore' = H.delete current fScore
-      neighboursNodes =  filter (\n -> not (HS.member n closedSet)) $ map (\ x -> Node x (Just current))  (neighbours (value current) path)
-      getPath (Node _ Nothing) = []
-      getPath (Node _ (Just n)) = value n : getPath n
-      tentatives = map (\n -> (n, score + cost (value current) (value n))) neighboursNodes
+      neighboursNodes =  filter (\n -> not (HS.member n closedSet)) $ map (\v -> Node v (Just current))  (neighbours (value current))
+      getPath (Node a Nothing) = [a]
+      getPath (Node a (Just n)) = a : getPath n
+      tentatives = map (\neighbour -> (neighbour, score + cost (value current) (value neighbour))) neighboursNodes
       (gScore'', fScore'', openSet'') = foldl' (\(gs, fs, os) (neighbour, tentative) ->
         if tentative < H.lookupDefault (maxBound :: Int) neighbour gs
         then let h = tentative + heuristic (value neighbour) in 
