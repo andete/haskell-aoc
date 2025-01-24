@@ -25,8 +25,8 @@ instance Hashable Reindeer where
 
 
 
-moves2 :: Maze -> Reindeer -> [Reindeer]
-moves2 maze (Reindeer loc dir) =
+moves :: Maze -> Reindeer -> [Reindeer]
+moves maze (Reindeer loc dir) =
     let mov = if movItem /= '#' then Just $ Reindeer (Located.location movLocated) dir else Nothing
         rot =  Just $ Reindeer loc rot90
         rotcc =  Just $ Reindeer loc rot90cc
@@ -36,11 +36,6 @@ moves2 maze (Reindeer loc dir) =
           rot90 = Direction4.rotate90 dir
           rot90cc = Direction4.rotate90cc dir
 
-bests :: Maze -> H.HashMap Reindeer Int
-bests maze = scores
-    where start = Reindeer (Located.location $ head $ M.findAll maze 'S') Direction4.East
-          scores = H.singleton start 0
-
 cost :: Reindeer -> Reindeer -> Int
 cost a b = if location a == location b then 1000 else 1
 
@@ -48,9 +43,9 @@ bestPath :: Maze -> Reindeer -> Location -> [Reindeer]
 bestPath maze start end = path aStar
     where aStar = AStar {
         getStart = start,
-        getGoal = \c visited -> location c == end,
+        getGoal = (== end) . location,
         getCost = cost,
-        getNeighbours = \c visited -> moves2 maze c,
+        getNeighbours = moves maze,
         getHeuristic = const 0
     }
 
