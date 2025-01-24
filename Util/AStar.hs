@@ -1,3 +1,4 @@
+module Util.AStar(AStar(..), path) where
 
 import qualified Data.HashMap.Strict as H
 import qualified Data.HashSet as HS
@@ -7,6 +8,7 @@ import qualified Data.PSQueue as Q
 import Data.PSQueue (Binding ((:->)))
 import Data.Foldable (foldl')
 import Data.Maybe (fromJust)
+import Debug.Trace (trace)
 
 data Node a = Node a (Maybe (Node a))
 
@@ -14,6 +16,10 @@ value :: Node a -> a
 value (Node a _) = a
 
 -- explicit Eq and Hashable implementations to avoid recursive calls
+
+instance Show a => Show (Node a) where
+  show (Node a Nothing) = show a
+  show (Node a (Just n)) = show a ++ " -> " ++ show (value n)
 
 instance Eq a => Eq (Node a) where
   (Node a Nothing) == (Node b (Just _)) = False
@@ -40,7 +46,7 @@ type Score a = H.HashMap (Node a) Int
 type PriorityQueue a = Q.PSQ (Node a) Int
 type ClosedSet a = HS.HashSet (Node a)
 
-path :: (Eq a, Hashable a, Ord a) => AStar a -> [a]
+path :: (Eq a, Hashable a, Ord a, Show a) => AStar a -> [a]
 path aStar =
     if immediatelyDone then [start] else path' aStar gScore fScore openSet closedSet
     where start = getStart aStar
@@ -49,11 +55,11 @@ path aStar =
           startNode = Node start Nothing
           immediatelyDone = getGoal aStar start [start]
           gScore = H.singleton startNode 0
-          fScore = H.singleton startNode heuristic
-          openSet = Q.singleton startNode heuristic
+          fScore = H.singleton startNode (0 + heuristic)
+          openSet = Q.singleton startNode (0 + heuristic)
           closedSet = HS.empty
 
-path' :: (Eq a, Hashable a, Ord a) => AStar a -> Score a -> Score a -> PriorityQueue a -> ClosedSet a -> [a]
+path' :: (Eq a, Hashable a, Ord a, Show a) => AStar a -> Score a -> Score a -> PriorityQueue a -> ClosedSet a -> [a]
 path' aStar gScore fScore openSet closedSet
   | Q.null openSet = []
   | goal (value current) path = reverse (value current : path)
@@ -73,7 +79,8 @@ path' aStar gScore fScore openSet closedSet
       getPath (Node _ Nothing) = []
       getPath (Node _ (Just n)) = value n : getPath n
       tentatives = map (\n -> (n, score + cost (value current) (value n))) neighboursNodes
-      (gScore'', fScore'', openSet'') = foldl' (\(gs, fs, os) (n, tentative) ->
-        if tentative < H.lookupDefault (maxBound :: Int) n gs
-        then (H.insert n tentative gs, H.insert n (tentative + heuristic (value n)) fs, Q.insert n (tentative + heuristic (value n)) os)
-        else (gs, fs, os)) (gScore, fScore, openSet) tentatives
+      (gScore'', fScore'', openSet'') = foldl' (\(gs, fs, os) (neighbour, tentative) ->
+        if tentative < H.lookupDefault (maxBound :: Int) neighbour gs
+        then let h = tentative + heuristic (value neighbour) in 
+            (H.insert neighbour tentative gs, H.insert neighbour h fs, Q.insert neighbour h os)
+        else (gs, fs, os)) (gScore', fScore', openSet') tentatives
