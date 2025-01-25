@@ -3,7 +3,7 @@ module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neigh
 import qualified Data.Vector as V
 import Util.Location (Location (..))
 import qualified Util.Direction4 as Direction4
-
+import qualified Data.HashSet as HS
 import Util.Aoc
 import Data.Maybe (mapMaybe, fromJust)
 import Util.Located
@@ -16,10 +16,10 @@ parseMazeLine make y line = V.fromList $ zipWith (\ x c -> Located (Location x y
 parse :: (Char -> a) -> [String] -> Maze a
 parse make input = Maze . V.fromList $ zipWith (parseMazeLine make) [0..] input
 
-showLocated :: (a -> String) -> [Location] -> Located a -> String
+showLocated :: (a -> String) ->  HS.HashSet Location -> Located a -> String
 showLocated showing visited (Located loc c) = if loc `elem` visited then "\ESC[31m" ++ showing c ++ "\ESC[0m" else showing c
 
-showMaze :: (a -> String) -> Maze a -> [Location] -> String
+showMaze :: (a -> String) -> Maze a -> HS.HashSet Location -> String
 showMaze showing maze visited = joinToString "\n" $ map (joinToString "" . map (showLocated showing visited)) (mazeToLists maze)
 
 mazeToLists :: Maze a -> [[Located a]]
