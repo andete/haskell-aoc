@@ -9,6 +9,10 @@ import Util.Location (Location)
 import Data.Hashable (Hashable, hashWithSalt)
 import Data.Maybe (fromJust, catMaybes)
 import Util.AStar2
+import qualified Util.AStarAllBest as AStarAllBest
+import Data.List (nub)
+import qualified Data.HashSet as HS
+
 type Maze = M.Maze Char
 type Located = M.Located Char
 type Direction = Direction4.Direction4
@@ -49,8 +53,21 @@ bestPath maze start end = path aStar
         getHeuristic = const 0
     }
 
+bestPaths :: Maze -> Reindeer -> Location -> [[Reindeer]]
+bestPaths maze start end = AStarAllBest.path aStar
+    where aStar = AStarAllBest.AStar {
+        AStarAllBest.getStart = start,
+        AStarAllBest.getGoal = (== end) . location,
+        AStarAllBest.getCost = cost,
+        AStarAllBest.getNeighbours = moves maze,
+        AStarAllBest.getHeuristic = const 0
+    }
+
 score :: [Reindeer] -> Int
 score path = sum $ zipWith cost (init path) (tail path)
+
+score2 :: [[Reindeer]] -> Int
+score2 path = length $ HS.fromList $ map location $ concat path
 
 part1_example = do
     part1 7036 "2024/day16/example.txt" day16part1
@@ -62,6 +79,15 @@ part1_example2 = do
 part1_input = do
     part1 82460 "2024/day16/input.txt" day16part1
 
+part2_example = do
+    part1 45 "2024/day16/example.txt" day16part2
+
+part2_example2 = do
+    part1 64 "2024/day16/example2.txt" day16part2
+
+part2_input = do
+    part1 590 "2024/day16/input.txt" day16part2
+
 day16part1 :: [String] -> Int
 day16part1 field = trace (M.showMaze (:[]) maze locationPath) $ score path
     where maze = M.parse id field
@@ -69,5 +95,18 @@ day16part1 field = trace (M.showMaze (:[]) maze locationPath) $ score path
           end = head $ M.findAll maze 'E'
           reindeer = Reindeer (Located.location start) Direction4.East
           path = bestPath maze reindeer (Located.location end)
-          locationPath = map location path
+          locationPath = HS.fromList $ map location path
 
+day16part2 :: [String] -> Int
+day16part2 field = trace (show scores) $ trace (M.showMaze (:[]) maze locationPath) $ score2 lowestPaths
+    where maze = M.parse id field
+          start = head $ M.findAll maze 'S'
+          end = head $ M.findAll maze 'E'
+          reindeer = Reindeer (Located.location start) Direction4.East
+          paths = bestPaths maze reindeer (Located.location end)
+          scores = nub $ map score paths
+          bestScore = minimum scores
+          lowestPaths = filter (\p -> score p == bestScore) paths
+          locationPath = HS.fromList $ map location (concat lowestPaths)
+
+main = do part2_input
