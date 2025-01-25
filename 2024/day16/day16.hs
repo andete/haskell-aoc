@@ -8,7 +8,7 @@ import qualified Util.Located as Located
 import Util.Location (Location)
 import Data.Hashable (Hashable, hashWithSalt)
 import Data.Maybe (fromJust, catMaybes)
-import Util.AStar
+import Util.AStar2
 type Maze = M.Maze Char
 type Located = M.Located Char
 type Direction = Direction4.Direction4
