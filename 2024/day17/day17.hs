@@ -67,11 +67,6 @@ combo operand computer = case operand of
               6 -> c computer
               7 -> error "reserved"
 
-repeatUntil :: (a -> Bool) -> (a -> a) -> a -> a
-repeatUntil p f x
-    | p x       = x
-    | otherwise = repeatUntil p f (f x)
-
 part1_example = do
     part1 "4,6,3,5,6,3,5,2,1,0" "2024/day17/example.txt" day17part1
 

@@ -1,4 +1,4 @@
-module Util.Aoc(readLines, listToNums, part, part1, part2, joinToString) where
+module Util.Aoc(readLines, listToNums, part, part1, part2, joinToString, repeatUntil) where
 
 import qualified Data.Vector as V
 
@@ -32,3 +32,8 @@ part2 = part 2
 
 joinToString :: String -> [String] -> String
 joinToString separator = foldr1 (\x acc -> x ++ separator ++ acc)
+
+repeatUntil :: (a -> Bool) -> (a -> a) -> a -> a
+repeatUntil p f x
+    | p x       = x
+    | otherwise = repeatUntil p f (f x)
