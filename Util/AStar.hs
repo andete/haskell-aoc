@@ -48,9 +48,9 @@ type Score a = H.HashMap (Node a) Int
 type PriorityQueue a = Q.PSQ (Node a) Int
 type ClosedSet a = HS.HashSet (Node a)
 
-path :: (Eq a, Hashable a, Show a, Ord a) => AStar a -> [a]
+path :: (Eq a, Hashable a, Show a, Ord a) => AStar a -> Maybe [a]
 path aStar =
-    if immediatelyDone then [start] else path' aStar gScore fScore openSet closedSet
+    if immediatelyDone then Just [start] else path' aStar gScore fScore openSet closedSet
     where start = getStart aStar
           cost = getCost aStar
           heuristic = getHeuristic aStar start
@@ -61,10 +61,10 @@ path aStar =
           openSet = Q.singleton startNode (0 + heuristic)
           closedSet = HS.empty
 
-path' :: (Eq a, Hashable a, Show a, Ord a) => AStar a -> Score a -> Score a -> PriorityQueue a -> ClosedSet a -> [a]
+path' :: (Eq a, Hashable a, Show a, Ord a) => AStar a -> Score a -> Score a -> PriorityQueue a -> ClosedSet a -> Maybe [a]
 path' aStar gScore fScore openSet closedSet
-  | Q.null openSet = []
-  | goal (value current) = reverse (getPath current)
+  | Q.null openSet = Nothing
+  | goal (value current) = Just $ reverse (getPath current)
   | otherwise = path' aStar gScore'' fScore'' openSet'' closedSet'
   where
       goal = getGoal aStar
