@@ -48,7 +48,7 @@ part1_input = do
 part2_example = do
     part2 "6,1" "2024/day18/example.txt" (day18part2 1 6 6)
 
--- this takes several minutes, perhaps a binary search would be faster
+-- this takes 15+ minutes, perhaps a binary search would be faster
 part2_input = do
     part2 "58,44" "2024/day18/input.txt" (day18part2 1024 70 70)
 
