@@ -10,6 +10,8 @@ import Util.Direction4
 import Data.Maybe (isJust, fromJust)
 import Data.Bifunctor (second)
 import Data.List (elemIndex)
+import Util.Location (hammingDistance, Location (Location))
+import qualified GHC.Real as HS
 
 -- exploration: just look at the path through the maze
 -- looking at the path found without any cheats shows the path covers every open spot in the maze!!
@@ -50,9 +52,10 @@ day20part1 :: Int -> [String] -> Int
 day20part1 saving input = trace (show cr) $ trace (M.showMaze (: []) maze sp) $ sum $ H.elems cr
     where maze = M.parse id input
           start = head $ M.findAll maze 'S'
+          startLocation = location start
           end = head $ M.findAll maze 'E'
           neigh loc = filter (\v -> value v /= '#') $ M.neighbours maze (location loc)
-          astar = AStar start (== end) (\_ _ -> 1) neigh (const 0)
+          astar = AStar start (== end) (\_ _ -> 1) neigh (const 0) 
           p = path astar
           sp = HS.fromList $ map location p
           cr = foldl (cheat saving maze p) H.empty p
@@ -64,3 +67,12 @@ part1_input = do
     part1 1399 "2024/day20/input.txt" (day20part1 100)
 
 -- part 2: instead of cheating 1, we can do upto 20 cheats in one go
+
+day20testAround :: Int -> Int -> [String] -> Int
+day20testAround x y input = trace (M.showMaze (: []) maze a') 0
+    where maze = M.parse id input
+          a = HS.fromList $ map location $ M.around maze 20 (Location x y)
+          a' = HS.delete (Location x y) a
+          
+part2_input_testAround = do
+    part1 0 "2024/day20/input.txt" (day20testAround 30 30)

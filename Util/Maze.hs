@@ -1,4 +1,4 @@
-module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items, set) where
+module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items, set, around) where
 
 import qualified Data.Vector as V
 import Util.Location (Location (..))
@@ -7,6 +7,9 @@ import qualified Data.HashSet as HS
 import Util.Aoc
 import Data.Maybe (mapMaybe, fromJust)
 import Util.Located
+import Data.Hashable (Hashable)
+import qualified GHC.Show as M
+import Debug.Trace (trace)
 
 newtype Maze a = Maze (V.Vector (V.Vector (Located a)))
 
@@ -71,3 +74,9 @@ items = concat . mazeToLists
 
 set :: a -> Location -> Maze a -> Maze a
 set newC (Location x y) (Maze v)  = Maze $ v V.// [(y, (v V.! y) V.// [(x, Located (Location x y) newC)])]
+
+around :: Maze a -> Int -> Location -> [Located a]
+around maze n loc = mapMaybe (at maze) xys
+    where xys = map ((+ loc) . uncurry Location) $ filter filt $ [(x,y) | x <- [-n..n], y <- [-n..n]]
+          filt (x,y) = let a = abs x + abs y in a > 0 && a <= n
+

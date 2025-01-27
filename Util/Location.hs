@@ -1,4 +1,4 @@
-module Util.Location(Location(..), x ,y, fromList) where
+module Util.Location(Location(..), x ,y, fromList, hammingDistance) where
 
 import Data.Hashable (Hashable, hashWithSalt)
 
@@ -23,3 +23,6 @@ y (Location _ y) = y
 
 fromList :: [Int] -> Location
 fromList [x,y] = Location x y
+
+hammingDistance :: Location -> Location -> Int
+hammingDistance (Location x1 y1) (Location x2 y2) = abs (x1 - x2) + abs (y1 - y2)
