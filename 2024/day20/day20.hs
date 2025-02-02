@@ -3,13 +3,13 @@ import qualified Util.Maze as M
 import Debug.Trace (trace)
 import qualified Data.HashSet as HS
 import qualified Data.HashMap.Strict as H
-import Util.AStar2
+import Util.AStar
 import Util.Located
 import Util.Maze (Maze)
 import Util.Direction4
-import Data.Maybe (isJust, fromJust)
+import Data.Maybe (isJust, fromJust, mapMaybe)
 import Data.Bifunctor (second)
-import Data.List (elemIndex)
+import Data.List (elemIndex, sortBy, sort)
 import Util.Location (hammingDistance, Location (Location))
 import qualified GHC.Real as HS
 
@@ -23,7 +23,7 @@ day20part1pre input = trace (M.showMaze (: []) maze sp) $ length p
           end = head $ M.findAll maze 'E'
           neigh loc = filter (\v -> value v /= '#') $ M.neighbours maze (location loc)
           astar = AStar start (== end) (\_ _ -> 1) neigh (const 0)
-          p = path astar
+          p = fromJust $ path astar
           sp = HS.fromList $ map location p
 
 part1pre_example = do
@@ -55,8 +55,8 @@ day20part1 saving input = trace (show cr) $ trace (M.showMaze (: []) maze sp) $ 
           startLocation = location start
           end = head $ M.findAll maze 'E'
           neigh loc = filter (\v -> value v /= '#') $ M.neighbours maze (location loc)
-          astar = AStar start (== end) (\_ _ -> 1) neigh (const 0) 
-          p = path astar
+          astar = AStar start (== end) (\_ _ -> 1) neigh (const 0)
+          p = fromJust $ path astar
           sp = HS.fromList $ map location p
           cr = foldl (cheat saving maze p) H.empty p
 
@@ -68,11 +68,56 @@ part1_input = do
 
 -- part 2: instead of cheating 1, we can do upto 20 cheats in one go
 
+-- -- test finding locations around a certain position in a fast way
+
 day20testAround :: Int -> Int -> [String] -> Int
 day20testAround x y input = trace (M.showMaze (: []) maze a') 0
     where maze = M.parse id input
           a = HS.fromList $ map location $ M.around maze 20 (Location x y)
           a' = HS.delete (Location x y) a
-          
+
 part2_input_testAround = do
     part1 0 "2024/day20/input.txt" (day20testAround 30 30)
+
+type IndexMap = H.HashMap Location Int
+lookUp :: IndexMap -> Location -> Int
+lookUp indexMap loc = fromJust $ H.lookup loc indexMap
+
+data Cheat = Cheat [Location] Int deriving (Show)
+
+wallPath :: Maze Char -> Location -> Location -> Maybe [Location]
+wallPath maze start end = path astar
+    where astar = AStar start (== end) (\_ _ -> 1) n (const 0)
+          n a = map location $ filter (\located -> value located == '#' || location located == end) $ M.neighbours maze a
+
+positionsWithinReach :: Maze Char -> IndexMap -> Int -> Location -> [Cheat]
+positionsWithinReach maze indexMap reach loc =
+    mapMaybe (wpOk . wp) around
+    where around = M.around maze reach loc
+          locIndex = lookUp indexMap loc
+          notWall = (/=) '#' . value
+          gain' l s = lookUp indexMap l - locIndex - s - 1
+          -- if not wall and further down the path, try to find a wall-path to the location
+          wp l = if notWall l && gain' (location l) 1 >= 0 then wallPath maze loc (location l) else Nothing
+          -- the wall path cannot be longer then the 'reach' + 2 as we can only cheat 'reach' steps
+          wpOk ml = case ml of
+              Just l -> if length l < reach + 2 then Just $ Cheat l (gain' (last l) (length l - 2)) else Nothing
+              Nothing -> Nothing
+
+day20part2 :: Int -> Int -> [String] -> Int
+day20part2 reach gain input = trace (show cheatStats) $ trace (M.showMaze (:[]) maze (HS.fromList pLoc)) $ trace (show $ cheats !! 1) $ 
+    length $ filter (\(Cheat _ g) -> g >= gain) cheats
+    where maze = M.parse id input
+          start = head $ M.findAll maze 'S'
+          startLocation = location start
+          end = head $ M.findAll maze 'E'
+          neigh loc = filter (\v -> value v /= '#') $ M.neighbours maze (location loc)
+          astar = AStar start (== end) (\_ _ -> 1) neigh (const 0)
+          p = fromJust $ path astar
+          pLoc = map location p
+          indexMap = H.fromList $ zip pLoc [0..]
+          cheats = concatMap (positionsWithinReach maze indexMap reach) pLoc
+          cheatStats = sort $ filter (\(a,_) -> a > 0) $ H.toList $ foldl (\h (Cheat _ g) -> H.insert g (H.lookupDefault 0 g h + 1) h) H.empty cheats        
+
+part2_example = do
+    part1 273 "2024/day20/example.txt" (day20part2 20 50)
