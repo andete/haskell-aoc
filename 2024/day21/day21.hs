@@ -160,11 +160,11 @@ day20part2rawCached times input = zip lengths numeric
     lengths = map length sequences
     numeric = map (\x -> read (init x) :: Int) input
 
-day20part1 :: [Code] -> Int
-day20part1 input = sum $ map (uncurry (*)) $ day20part1raw input
+day21part1 :: [Code] -> Int
+day21part1 input = sum $ map (uncurry (*)) $ day20part1raw input
 
-day20part2 :: Int -> [Code] -> Integer
-day20part2 times input = sum $ map (\(a, b) -> toInteger a * toInteger b) $ day20part2rawCached times input
+day21part2 :: Int -> [Code] -> Integer
+day21part2 times input = sum $ map (\(a, b) -> toInteger a * toInteger b) $ day20part2rawCached times input
 
 part1_example_robot1 = do
   part1 "<A^A>^^AvvvA" "2024/day21/example.txt" (day20part1sub 0)
@@ -179,10 +179,10 @@ part1_example_raw = do
   part1 [(68, 29), (60, 980), (68, 179), (64, 456), (64, 379)] "2024/day21/example.txt" day20part1raw
 
 part1_example = do
-  part1 126384 "2024/day21/example.txt" day20part1
+  part1 126384 "2024/day21/example.txt" day21part1
 
 part1_input = do
-  part1 248108 "2024/day21/input.txt" day20part1
+  part1 248108 "2024/day21/input.txt" day21part1
 
 part2_example_raw = do
   part2 [(68, 29), (60, 980), (68, 179), (64, 456), (64, 379)] "2024/day21/example.txt" (day20part2raw 1)
@@ -194,10 +194,10 @@ part2_example_raw_cached = do
   part2 [(68, 29), (60, 980), (68, 179), (64, 456), (64, 379)] "2024/day21/example.txt" (day20part2rawCached 1)
 
 part2_example = do
-  part2 126384 "2024/day21/example.txt" (day20part2 1)
+  part2 126384 "2024/day21/example.txt" (day21part2 1)
 
 part2_input_low = do
-  part2 248108 "2024/day21/input.txt" (day20part2 1)
+  part2 248108 "2024/day21/input.txt" (day21part2 1)
 
 part2_input = do
-  part2 248108 "2024/day21/input.txt" (day20part2 8)
+  part2 248108 "2024/day21/input.txt" (day21part2 8)
