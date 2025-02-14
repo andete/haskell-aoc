@@ -61,10 +61,10 @@ day20part1 saving input = trace (show cr) $ trace (M.showMaze (: []) maze sp) $ 
           cr = foldl (cheat saving maze p) H.empty p
 
 part1_example = do
-    part1 10 "2024/day20/example.txt" (day20part1 10)
+    part1 10 "2024/day20/example.txt" (day20part1 10) -- 10 cheats that save 10 picoseconds
 
 part1_input = do
-    part1 1399 "2024/day20/input.txt" (day20part1 100)
+    part1 1399 "2024/day20/input.txt" (day20part1 100) -- 1399 cheats that save 100 picoseconds
 
 -- part 2: instead of cheating 1, we can do upto 20 cheats in one go
 

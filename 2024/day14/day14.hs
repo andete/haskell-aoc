@@ -54,3 +54,4 @@ day14part2 :: Int -> Int -> [String] -> Integer
 day14part2 wide tall s = trace (showRobotMaze wide tall robots6870) 6870
     where robots = map parse s
           robots6870 = iterate (map (move wide tall)) robots !! 6870
+          
