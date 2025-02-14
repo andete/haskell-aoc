@@ -1,4 +1,4 @@
-module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items, set, around, neighboursAltOrder) where
+module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items, set, around, neighboursAltOrder, parseItemList) where
 
 import qualified Data.Vector as V
 import Util.Location (Location (..))
@@ -15,6 +15,12 @@ newtype Maze a = Maze (V.Vector (V.Vector (Located a)))
 
 parseMazeLine :: (Char -> a) -> Int -> String -> V.Vector (Located a)
 parseMazeLine make y line = V.fromList $ zipWith (\ x c -> Located (Location x y) (make c)) [0..] line
+
+parseMazeItemLine :: Int -> [a] -> V.Vector (Located a)
+parseMazeItemLine y line = V.fromList $ zipWith (\ x c -> Located (Location x y) c) [0..] line
+
+parseItemList :: (String -> [a]) -> [String] -> Maze a
+parseItemList makeItems input = Maze . V.fromList $ zipWith (\y c -> parseMazeItemLine y (makeItems c)) [0..] input
 
 parse :: (Char -> a) -> [String] -> Maze a
 parse make input = Maze . V.fromList $ zipWith (parseMazeLine make) [0..] input
