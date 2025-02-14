@@ -1,5 +1,5 @@
 /.idea
-**/*.txt
+aoc/**/*.txt
 *.o
 *.hi
 *test*
