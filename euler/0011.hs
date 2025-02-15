@@ -30,7 +30,7 @@ nums i sn = let (r, m) = maximumBy (\x y -> compare (snd x) (snd y)) $ options' 
     let hs = HS.fromList $ map location r in
     trace (Maze.showMaze (\x -> " " ++ printf "%02d" x) maze hs) m
     where maze = Maze.parseItemList convert sn
-          convert line = map (read :: String -> Int) $ splitOn " " line
+          convert line = map (read :: String -> Int) (splitOn " " line)
 
 
 example = runLines 70600674 "euler/input/0011.txt" (nums 4)
