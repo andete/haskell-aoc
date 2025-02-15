@@ -1,3 +1,4 @@
+import Data.Numbers.Primes (isPrime)
 isPrime2 :: Integer -> Bool
 isPrime2 2 = True
 isPrime2 3 = True
@@ -11,7 +12,7 @@ isPrime2 n
             | n `mod` (i + 2) == 0 = False
             | otherwise = isPrime2' n (i + 6)
 
-primes = filter isPrime2 [2..]
+primes = filter isPrime [2..]
 
 example = sum $ takeWhile (< 10) primes
 
