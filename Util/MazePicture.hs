@@ -9,8 +9,8 @@ mazeToPicture :: Int -> Maze a -> (a -> Picture) -> (Int, Int, Picture)
 mazeToPicture cellSize maze drawCell =
     (windowWidth, windowHeight, pic)
     where  (Maze cells) = maze
-           windowWidth = cellSize * V.length cells
-           windowHeight = cellSize * V.length (V.head cells)
+           windowHeight = cellSize * V.length cells
+           windowWidth = cellSize * V.length (V.head cells)
            locatedCell (Located (Location x y) c) = translate (fromIntegral $ x * cellSize) (fromIntegral $ windowHeight - y * cellSize) $ drawCell c
            pic = translate 
             (fromIntegral $ - (windowWidth `div` 2) + cellSize `div` 2) 

@@ -84,8 +84,8 @@ charToPicture size c = case c of
     '#' -> Color red rect
     '.' -> Blank
     'O' -> Color green rect
-    '[' -> Color green rect
-    ']' -> Color green rect
+    '[' -> translate 0.5 0 $ Color green $ rectangleSolid size (size - 1)
+    ']' -> translate (-0.5) 0 $ Color green $ rectangleSolid size (size - 1)
     '@' -> Color white $ circleSolid (size / 2)
     _ -> Blank
     where rect = rectangleSolid (size - 1) (size - 1)
@@ -119,14 +119,51 @@ day15part2 s = trace (show moves) $ trace (Maze.showMaze (: []) maze2 HS.empty) 
           maze2 = double maze
           -- traceMaze mo x = trace (show mo ++ "\n" ++ Maze.showMaze (: []) x []) x
 
-part1_example1_show = do
-    lines <- readLines "aoc/2024/day15/example1.txt"
+part1_input_show = do
+    lines <- readLines "aoc/2024/day15/input.txt"
     let (maze, moves) = parse lines in
      let (x, y, picture) = mazeToPicture 15 maze (charToPicture 15) in
-      display 
+      display
         (InWindow
        "Part 1 Example 1"     -- window title
        (x, y)     -- window size
        (100, 100))     -- window position
        black         -- background color
        picture       -- picture to display
+
+part1_input_animate = do
+    lines <- readLines "aoc/2024/day15/input.txt"
+    let (startMaze, moves) = parse lines
+        mazes = reverse $ snd $ foldl (\(ma,acc) mo -> let next = fromMaybe ma $ move ma (head (Maze.findAll ma '@')) mo in (next,next:acc)) (startMaze,[startMaze]) moves
+        (x, y, _) = mazeToPicture 15 startMaze (charToPicture 15)
+        frame time = 
+            let (_, _, picture) = mazeToPicture 15 maze (charToPicture 15) in picture
+            where maze = mazes !! (round (time * 30) `mod` length mazes)
+        in
+     animate
+      (InWindow
+        "AOC Day 15 Part 1"     -- window title
+        (x, y)     -- window size
+        (100, 100))     -- window position
+      black         -- background color
+      frame       -- picture to display
+
+part2_input_animate = do
+    lines <- readLines "aoc/2024/day15/input.txt"
+    let (startMaze, moves) = parse lines
+        doubleMaze = double startMaze
+        mazes = reverse $ snd $ foldl (\(ma,acc) mo -> let next = fromMaybe ma $ move2 (head (Maze.findAll ma '@')) mo ma in (next,next:acc)) (doubleMaze,[doubleMaze]) moves
+        (x, y, _) = mazeToPicture 7 doubleMaze (charToPicture 7)
+        frame time = 
+            let (_, _, picture) = mazeToPicture 7 maze (charToPicture 7) in picture
+            where maze = mazes !! (round (time * 30) `mod` length mazes)
+        in
+     animate
+      (InWindow
+        "AOC Day 15 Part 2"     -- window title
+        (x, y)     -- window size
+        (100, 100))     -- window position
+      black         -- background color
+      frame       -- picture to display
+
+main = part2_input_animate
