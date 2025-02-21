@@ -9,6 +9,9 @@ import qualified Util.Located as Located
 import qualified Util.Maze as Located
 import qualified Data.Vector as V
 import Util.Direction4 ((+|))
+import qualified Data.HashSet as HS
+import Graphics.Gloss
+import Util.MazePicture
 
 type Direction = Direction.Direction4
 type Maze = Maze.Maze Char
@@ -76,31 +79,54 @@ double (Maze.Maze vnn) = Maze.Maze $ V.map mapRow vnn
                       '.' -> ".."
                       '@' -> "@."
 
+charToPicture :: Float -> Char -> Picture
+charToPicture size c = case c of
+    '#' -> Color red rect
+    '.' -> Blank
+    'O' -> Color green rect
+    '[' -> Color green rect
+    ']' -> Color green rect
+    '@' -> Color white $ circleSolid (size / 2)
+    _ -> Blank
+    where rect = rectangleSolid (size - 1) (size - 1)
+
 part1_example1 = do
-    part1 2028 "2024/day15/example1.txt" day15part1
+    part1 2028 "aoc/2024/day15/example1.txt" day15part1
 part1_example2 = do
-    part1 10092 "2024/day15/example2.txt" day15part1
+    part1 10092 "aoc/2024/day15/example2.txt" day15part1
 part1_input = do
-    part1 1499739 "2024/day15/input.txt" day15part1
+    part1 1499739 "aoc/2024/day15/input.txt" day15part1
 
 part2_example1 = do
-    part2 1751 "2024/day15/example1.txt" day15part2
+    part2 1751 "aoc/2024/day15/example1.txt" day15part2
 
 part2_example2 = do
-    part2 9021 "2024/day15/example2.txt" day15part2
+    part2 9021 "aoc/2024/day15/example2.txt" day15part2
 
 part2_input = do
-    part2 1522215 "2024/day15/input.txt" day15part2
+    part2 1522215 "aoc/2024/day15/input.txt" day15part2
 
 day15part1 :: [String] -> Int
-day15part1 s = trace (show moves) $ trace (Maze.showMaze (: []) maze []) $
+day15part1 s = trace (show moves) $ trace (Maze.showMaze (: []) maze HS.empty) $
     gpsSum 'O' $ foldl (\ma mo -> fromMaybe ma $ move ma (head (Maze.findAll ma '@')) mo) maze moves
     where (maze, moves) = parse s
 
 
 day15part2 :: [String] -> Int
-day15part2 s = trace (show moves) $ trace (Maze.showMaze (: []) maze2 []) $
+day15part2 s = trace (show moves) $ trace (Maze.showMaze (: []) maze2 HS.empty) $
     gpsSum '[' $ foldl (\ma mo -> fromMaybe ma $ move2 (head (Maze.findAll ma '@')) mo ma) maze2 moves
     where (maze, moves) = parse s
           maze2 = double maze
           -- traceMaze mo x = trace (show mo ++ "\n" ++ Maze.showMaze (: []) x []) x
+
+part1_example1_show = do
+    lines <- readLines "aoc/2024/day15/example1.txt"
+    let (maze, moves) = parse lines in
+     let (x, y, picture) = mazeToPicture 15 maze (charToPicture 15) in
+      display 
+        (InWindow
+       "Part 1 Example 1"     -- window title
+       (x, y)     -- window size
+       (100, 100))     -- window position
+       black         -- background color
+       picture       -- picture to display

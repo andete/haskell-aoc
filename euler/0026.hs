@@ -20,3 +20,6 @@ repFractions n = 1 + fractions' [] 1 n
 result = snd $ maximum $ map (\x -> (repFractions x, x)) [1..999]
 
 expected = result == 983
+
+-- somehow I think a cooler approach is possible
+
