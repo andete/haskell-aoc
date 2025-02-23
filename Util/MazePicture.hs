@@ -11,8 +11,8 @@ mazeToPicture cellSize maze drawCell =
     where  (Maze cells) = maze
            windowHeight = cellSize * V.length cells
            windowWidth = cellSize * V.length (V.head cells)
-           locatedCell (Located (Location x y) c) = translate (fromIntegral $ x * cellSize) (fromIntegral $ windowHeight - y * cellSize) $ drawCell c
+           locatedCell (Located (Location x y) c) = translate (fromIntegral $ x * cellSize) (fromIntegral $ (-y-1) * cellSize) $ drawCell c
            pic = translate 
-            (fromIntegral $ - (windowWidth `div` 2) + cellSize `div` 2) 
-            (fromIntegral $ - (windowHeight `div` 2) - cellSize `div` 2) 
+            (fromIntegral $ cellSize `div` 2) 
+            (fromIntegral $ cellSize `div` 2) 
             $ Pictures $ map locatedCell $ items maze
