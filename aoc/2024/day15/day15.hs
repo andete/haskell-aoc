@@ -120,14 +120,14 @@ day15part2 s = trace (show moves) $ trace (Maze.showMaze (: []) maze2 HS.empty) 
           -- traceMaze mo x = trace (show mo ++ "\n" ++ Maze.showMaze (: []) x []) x
 
 fix :: Int -> Int -> Picture -> Picture
-fix width height = translate (-(w / 2)) (h / 2)
+fix width height = flipY . translate (-(w / 2)) (-(h / 2))
   where w = fromIntegral width
         h = fromIntegral height
 
 part1_input_show = do
     lines <- readLines "aoc/2024/day15/input.txt"
     let (maze, moves) = parse lines in
-     let (x, y, picture) = mazeToPicture 15 maze (charToPicture 15) in
+     let (x, y, picture) = trace (Maze.showMaze (: []) maze HS.empty) $ mazeToPicture 15 maze (charToPicture 15) in
       display
         (InWindow
        "AOC 2024 15 Part 1 Input"     -- window title
