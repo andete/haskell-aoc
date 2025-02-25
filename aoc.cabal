@@ -47,6 +47,14 @@ extra-doc-files:    CHANGELOG.md
 common warnings
     ghc-options: -Wall -O2 -threaded
 
+library util-internal
+    exposed-modules: Util.Aoc, Util.AStar, Util.CharMaze, Util.Located, Util.Math, 
+        Util.Maze, Util.MazePicture, Util.Point, Util.Direction4, Util.Location
+    -- NOTE: no explicit constraints on base needed
+    --       as they're inherited from the 'library' stanza
+    build-depends: base ^>=4.17.2.1, hashable, vector, unordered-containers, gloss, PSQueue
+    hs-source-dirs: util
+
 executable aoc
     -- Import common warning flags.
     import:           warnings
@@ -55,13 +63,13 @@ executable aoc
     main-is:          aoc/2024/Day15/Day15.hs
 
     -- Modules included in this executable, other than Main.
-    other-modules: Util.Aoc, Util.AStar, Util.CharMaze, Util.Located, Util.Math, Util.Maze, Util.MazePicture, Util.Point
+    -- other-modules: Util.Aoc, Util.AStar, Util.CharMaze, Util.Located, Util.Math, Util.Maze, Util.MazePicture, Util.Point
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.17.2.1, hashable, vector, unordered-containers, gloss, PSQueue
+    build-depends: util-internal, base ^>=4.17.2.1, hashable, vector, unordered-containers, gloss, PSQueue
 
     -- Directories containing source files.
     hs-source-dirs:   .
