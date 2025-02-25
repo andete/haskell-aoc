@@ -39,7 +39,7 @@ part1_input = do
     part1 218295000 "2024/day14/input.txt" $ day14part1 101 103
 
 part2_input = do
-    part2 6870 "2024/day14/input.txt" $ day14part2 101 103
+    part2 6870 "aoc/2024/day14/input.txt" $ day14part2 101 103
 
 day14part1 :: Int -> Int -> [String] -> Integer
 day14part1 wide tall s = q1 * q2 * q3 * q4
@@ -54,4 +54,6 @@ day14part2 :: Int -> Int -> [String] -> Integer
 day14part2 wide tall s = trace (showRobotMaze wide tall robots6870) 6870
     where robots = map parse s
           robots6870 = iterate (map (move wide tall)) robots !! 6870
+
+main = part2_input
           
