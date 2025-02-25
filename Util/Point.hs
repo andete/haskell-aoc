@@ -1,4 +1,5 @@
 
+module Util.Point(Point(..), cardinal) where
 data Point t = Point t t deriving (Eq, Ord, Show)
 
 instance (Num t) => Num (Point t) where
