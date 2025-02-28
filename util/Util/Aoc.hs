@@ -1,6 +1,7 @@
-module Util.Aoc(readLines, listToNums, part, part1, part2, joinToString, repeatUntil) where
+module Util.Aoc(readLines, listToNums, part, part1, part2, joinToString, repeatUntil, runAoc) where
 
 import qualified Data.Vector as V
+import System.Environment (getArgs)
 
 
 readLines :: FilePath -> IO [String]
@@ -37,3 +38,12 @@ repeatUntil :: (a -> Bool) -> (a -> a) -> a -> a
 repeatUntil p f x
     | p x       = x
     | otherwise = repeatUntil p f (f x)
+
+
+runAoc :: [(String, IO ())] -> IO ()
+runAoc commands = getArgs >>= \args -> case args of
+    [] -> usage
+    (command:_) -> case lookup command commands of
+        Just action -> action
+        Nothing -> usage
+  where usage = putStrLn $ "Usage: run " ++  joinToString " | " (map fst commands)

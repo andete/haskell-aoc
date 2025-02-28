@@ -54,9 +54,7 @@ common depends
 library util
     import: warnings, depends
     exposed-modules: Util.Aoc, Util.AStar, Util.CharMaze, Util.Located, Util.Math, 
-        Util.Maze, Util.MazePicture, Util.Point, Util.Direction4, Util.Location
-    -- NOTE: no explicit constraints on base needed
-    --       as they're inherited from the 'library' stanza
+        Util.Maze, Util.MazePicture, Util.Point, Util.Direction4, Util.Location, Util.AStarAllBest, Util.AStar2
     build-depends: base ^>=4.17.2.1, hashable, vector, unordered-containers, gloss, PSQueue
     hs-source-dirs: util
 
@@ -71,3 +69,9 @@ executable aoc2024day15
     build-depends:    util
     main-is:          Day15.hs
     hs-source-dirs:   aoc/2024/Day15
+
+executable aoc2024day16
+    import:           warnings, depends
+    build-depends:    util
+    main-is:          Day16.hs
+    hs-source-dirs:   aoc/2024/Day16

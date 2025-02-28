@@ -70,23 +70,23 @@ score2 :: [[Reindeer]] -> Int
 score2 path = length $ HS.fromList $ map location $ concat path
 
 part1_example = do
-    part1 7036 "2024/day16/example.txt" day16part1
+    part1 7036 "aoc/2024/day16/example.txt" day16part1
 
 
 part1_example2 = do
-    part1 11048 "2024/day16/example2.txt" day16part1
+    part1 11048 "aoc/2024/day16/example2.txt" day16part1
 
 part1_input = do
-    part1 82460 "2024/day16/input.txt" day16part1
+    part1 82460 "aoc/2024/day16/input.txt" day16part1
 
 part2_example = do
-    part1 45 "2024/day16/example.txt" day16part2
+    part1 45 "aoc/2024/day16/example.txt" day16part2
 
 part2_example2 = do
-    part1 64 "2024/day16/example2.txt" day16part2
+    part1 64 "aoc/2024/day16/example2.txt" day16part2
 
 part2_input = do
-    part1 590 "2024/day16/input.txt" day16part2
+    part1 590 "aoc/2024/day16/input.txt" day16part2
 
 day16part1 :: [String] -> Int
 day16part1 field = trace (M.showMaze (:[]) maze locationPath) $ score path
@@ -109,4 +109,4 @@ day16part2 field = trace (show scores) $ trace (M.showMaze (:[]) maze locationPa
           lowestPaths = filter (\p -> score p == bestScore) paths
           locationPath = HS.fromList $ map location (concat lowestPaths)
 
-main = do part2_input
+main = runAoc [("1e", part1_example), ("1i", part1_input), ("1e2", part1_example2), ("2e", part2_example), ("2i", part2_input), ("2e2", part2_example2)]

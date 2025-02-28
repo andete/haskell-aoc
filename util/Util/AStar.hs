@@ -52,7 +52,6 @@ path :: (Eq a, Hashable a, Show a, Ord a) => AStar a -> Maybe [a]
 path aStar =
     if immediatelyDone then Just [start] else path' aStar gScore fScore openSet closedSet
     where start = getStart aStar
-          cost = getCost aStar
           heuristic = getHeuristic aStar start
           startNode = Node start Nothing
           immediatelyDone = getGoal aStar start
