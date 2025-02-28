@@ -79,8 +79,8 @@ double (Maze.Maze vnn) = Maze.Maze $ V.map mapRow vnn
                       '.' -> ".."
                       '@' -> "@."
 
-charToPicture :: Float -> Char -> Picture
-charToPicture size c = case c of
+charToPicture :: Float -> Int -> Int -> Char -> Picture
+charToPicture size _ _ c = case c of
     '#' -> Color red rect
     '.' -> Blank
     'O' -> Color green rect

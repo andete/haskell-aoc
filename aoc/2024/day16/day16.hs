@@ -5,14 +5,17 @@ import qualified Data.HashMap.Strict as H
 import qualified Util.Direction4 as Direction4
 import Util.Direction4 (Direction4, (+|))
 import qualified Util.Located as Located
-import Util.Location (Location)
+import Util.Location (Location(..))
 import Data.Hashable (Hashable, hashWithSalt)
 import Data.Maybe (fromJust, catMaybes)
 import Util.AStar2
 import qualified Util.AStarAllBest as AStarAllBest
 import Data.List (nub)
 import qualified Data.HashSet as HS
-
+import Graphics.Gloss
+import Util.MazePicture
+import qualified Data.Colour.RGBSpace.HSL as HSL
+import Data.Colour.RGBSpace (uncurryRGB)
 type Maze = M.Maze Char
 type Located = M.Located Char
 type Direction = Direction4.Direction4
@@ -66,6 +69,9 @@ bestPaths maze start end = AStarAllBest.path aStar
 score :: [Reindeer] -> Int
 score path = sum $ zipWith cost (init path) (tail path)
 
+cummulScore :: [Reindeer] -> [Int]
+cummulScore path = scanl (+) 0 $ zipWith cost (init path) (tail path)
+
 score2 :: [[Reindeer]] -> Int
 score2 path = length $ HS.fromList $ map location $ concat path
 
@@ -109,4 +115,48 @@ day16part2 field = trace (show scores) $ trace (M.showMaze (:[]) maze locationPa
           lowestPaths = filter (\p -> score p == bestScore) paths
           locationPath = HS.fromList $ map location (concat lowestPaths)
 
-main = runAoc [("1e", part1_example), ("1i", part1_input), ("1e2", part1_example2), ("2e", part2_example), ("2i", part2_input), ("2e2", part2_example2)]
+fix :: Int -> Int -> Picture -> Picture
+fix width height = flipY . translate (-(w / 2)) (-(h / 2))
+  where w = fromIntegral width
+        h = fromIntegral height
+
+charToPicture :: Int -> H.HashMap Location Int -> HS.HashSet Location -> Float -> Int -> Int -> Char -> Picture
+charToPicture score cummul visited size x y c =
+    case c of
+    '#' -> Color (dark white) rect
+    '.' -> if HS.member (Location x y) visited
+         then Color rgb' rect
+         else Blank
+    'S' -> Color red $ circleSolid (size / 2)
+    'E' -> Color green $ circleSolid (size / 2)
+    _ -> Blank
+    where rect = rectangleSolid (size - 1) (size - 1)
+          cost = fromJust $ H.lookup (Location x y) cummul
+          rgb = HSL.hsl (360.0 * fromIntegral cost / fromIntegral score) 1 0.5
+          rgb' = uncurryRGB (\r g b -> makeColor r g b 1.0) rgb
+
+part1_show fileName = do
+    lines <- readLines $ "aoc/2024/day16/" ++ fileName
+    let maze = M.parse id lines
+        start = head $ M.findAll maze 'S'
+        end = head $ M.findAll maze 'E'
+        reindeer = Reindeer (Located.location start) Direction4.East
+        path = bestPath maze reindeer (Located.location end)
+        cummul = H.fromList $ zip (map location path) (cummulScore path)
+        s = score path
+        locationPath = HS.fromList $ map location path
+        (x, y, picture) = trace (M.showMaze (: []) maze locationPath) $ mazeToPicture 7 maze (charToPicture s cummul locationPath 7)
+        in
+      display
+        (InWindow
+       ("AOC 2024 16 Part 1 " ++ fileName)     -- window title
+       (x, y)     -- window size
+       (100, 100))     -- window position
+       black         -- background color
+       (fix x y picture)       -- picture to display
+
+main = runAoc [
+    ("1e", part1_example), ("1i", part1_input), ("1e2", part1_example2),
+    ("2e", part2_example), ("2i", part2_input), ("2e2", part2_example2),
+    ("1se", part1_show "example.txt"), ("1si", part1_show "input.txt")
+    ]

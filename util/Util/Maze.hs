@@ -1,4 +1,4 @@
-module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items, set, around, neighboursAltOrder, parseItemList) where
+module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items, set, around, neighboursAltOrder, parseItemList, width, height) where
 
 import qualified Data.Vector as V
 import Util.Location (Location (..))
@@ -69,6 +69,12 @@ neighbours' maze loc = map (at' maze . (loc Direction4.+|)) Direction4.all
 
 neighbours'dir :: Maze a -> Location -> [(Located (Maybe a), Direction4.Direction4)]
 neighbours'dir maze loc = map (\dir -> (at' maze (loc Direction4.+| dir), dir)) Direction4.all
+
+width :: Maze a -> Int
+width (Maze v) = if V.length v == 0 then 0 else V.length (V.head v)
+
+height:: Maze a -> Int
+height (Maze v) = V.length v
 
 xIndices :: Maze a -> [Int]
 xIndices (Maze v) = [0..lx-1]
