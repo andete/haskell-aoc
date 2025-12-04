@@ -167,7 +167,7 @@ part1_show fileName = do
         nextWorld w = w { aStar = AStarStep.next (aStar w) }
         showWorld w = let
             cummul = H.fromList $ zip (map location path) (cummulScore path)
-            s = score path
+            s = 8000
             locationPath = HS.fromList $ map location path
             (x, y, picture) = trace (M.showMaze (: []) maze locationPath) $ mazeToPicture 7 maze (charToPicture s cummul locationPath 7)
             in fix x y picture
