@@ -19,7 +19,7 @@ part2_input = do
 
 
 range :: String -> [Integer]
-range s = [a..b] where [a, b] = splitOn "-" s >>= \x -> [read x :: Integer]
+range s = [a..b] where [a, b] = map (read :: String -> Integer) $ splitOn "-" s
 
 invalid :: Integer -> Bool
 invalid x = firstHalf == secondHalf
@@ -43,10 +43,10 @@ invalid2 x = any (okay s) options
 day02part1 :: [String] -> Integer
 day02part1 xn = sum invalids
    where ranges = map range $ splitOn "," (head xn)
-         invalids = concat $ map (\r -> filter invalid r) ranges
+         invalids = concat $ map (filter invalid) ranges
 
 
 day02part2 :: [String] -> Integer
 day02part2 xn = sum invalids
    where ranges = map range $ splitOn "," (head xn)
-         invalids = concat $ map (\r -> filter invalid2 r) ranges
+         invalids = concat $ map (filter invalid2) ranges
