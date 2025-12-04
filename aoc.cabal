@@ -54,7 +54,8 @@ common depends
 library util
     import: warnings, depends
     exposed-modules: Util.Aoc, Util.AStar, Util.CharMaze, Util.Located, Util.Math, 
-        Util.Maze, Util.MazePicture, Util.Point, Util.Direction4, Util.Location, Util.AStarAllBest, Util.AStar2
+        Util.Maze, Util.MazePicture, Util.Point, Util.Direction4, Util.Location, Util.AStarAllBest, Util.AStar2, 
+        Util.AStarStep
     build-depends: base ^>=4.17.2.1, hashable, vector, unordered-containers, gloss, PSQueue
     hs-source-dirs: util
 

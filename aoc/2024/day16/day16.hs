@@ -16,6 +16,8 @@ import Graphics.Gloss
 import Util.MazePicture
 import qualified Data.Colour.RGBSpace.HSL as HSL
 import Data.Colour.RGBSpace (uncurryRGB)
+import qualified Util.AStarStep as AStarStep
+
 type Maze = M.Maze Char
 type Located = M.Located Char
 type Direction = Direction4.Direction4
@@ -135,25 +137,52 @@ charToPicture score cummul visited size x y c =
           rgb = HSL.hsl (360.0 * fromIntegral cost / fromIntegral score) 1 0.5
           rgb' = uncurryRGB (\r g b -> makeColor r g b 1.0) rgb
 
+data World = World {
+    maze :: M.Maze Char,
+    start :: Located,
+    end:: Located,
+    reindeer :: Reindeer,
+    aStar :: AStarStep.AStar Reindeer
+}
+
 part1_show fileName = do
     lines <- readLines $ "aoc/2024/day16/" ++ fileName
     let maze = M.parse id lines
         start = head $ M.findAll maze 'S'
         end = head $ M.findAll maze 'E'
         reindeer = Reindeer (Located.location start) Direction4.East
-        path = bestPath maze reindeer (Located.location end)
-        cummul = H.fromList $ zip (map location path) (cummulScore path)
-        s = score path
-        locationPath = HS.fromList $ map location path
-        (x, y, picture) = trace (M.showMaze (: []) maze locationPath) $ mazeToPicture 7 maze (charToPicture s cummul locationPath 7)
+        world = World {
+            maze = maze,
+            start = start,
+            end = end,
+            reindeer = reindeer,
+            aStar = AStarStep.create AStarStep.AStarMethods {
+                AStarStep.getStart = reindeer,
+                AStarStep.getGoal = (== Located.location end) . location,
+                AStarStep.getCost = cost,
+                AStarStep.getNeighbours = moves maze,
+                AStarStep.getHeuristic = const 0
+            }
+        }
+        nextWorld w = w { aStar = AStarStep.next (aStar w) }
+        showWorld w = let
+            cummul = H.fromList $ zip (map location path) (cummulScore path)
+            s = score path
+            locationPath = HS.fromList $ map location path
+            (x, y, picture) = trace (M.showMaze (: []) maze locationPath) $ mazeToPicture 7 maze (charToPicture s cummul locationPath 7)
+            in fix x y picture
+            where path = AStarStep.path $ aStar w
         in
-      display
-        (InWindow
-       ("AOC 2024 16 Part 1 " ++ fileName)     -- window title
-       (x, y)     -- window size
-       (100, 100))     -- window position
-       black         -- background color
-       (fix x y picture)       -- picture to display
+      simulate
+       (InWindow
+        "AOC 2024 Day 15 Part 2"     -- window title
+        (1200, 1200)     -- window size
+        (100, 100))     -- window position
+        black -- background color
+        30 -- number of steps per second
+        world -- initial World
+        showWorld
+        (\_ _ w -> nextWorld w) -- update World
 
 main = runAoc [
     ("1e", part1_example), ("1i", part1_input), ("1e2", part1_example2),
