@@ -1,8 +1,9 @@
-module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items, set, around, neighboursAltOrder, parseItemList, width, height) where
+module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items, set, around, neighboursAltOrder, parseItemList, width, height, neighbours8) where
 
 import qualified Data.Vector as V
 import Util.Location (Location (..))
 import qualified Util.Direction4 as Direction4
+import qualified Util.Direction8 as Direction8
 import qualified Data.HashSet as HS
 import Util.Aoc
 import Data.Maybe (mapMaybe, fromJust)
@@ -52,6 +53,9 @@ at' maze loc = case at maze loc of
 
 neighbours :: Maze a -> Location -> [Located a]
 neighbours maze loc = mapMaybe (at maze . (loc Direction4.+|)) Direction4.all
+
+neighbours8 :: Maze a -> Location -> [Located a]
+neighbours8 maze loc = mapMaybe (at maze . (loc Direction8.+|)) Direction8.all
 
 neighboursAltOrder :: Maze a -> Location -> [Located a]
 neighboursAltOrder maze loc = mapMaybe (at maze . (loc Direction4.+|)) Direction4.all'
