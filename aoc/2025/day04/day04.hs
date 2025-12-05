@@ -19,7 +19,7 @@ part2_example = do
     part2 43 "2025/day04/example.txt" day04part2
 
 part2_input = do
-    part2 170731717900423 "2025/day04/input.txt" day04part2
+    part2 8707 "2025/day04/input.txt" day04part2
 
 day04part1 :: [String] -> Integer
 day04part1 xn = trace (Maze.showMaze (:[]) maze HS.empty) (toInteger $ length accessibles)
