@@ -13,10 +13,10 @@ part1_example = do
     part1 13 "2025/day04/example.txt" day04part1
 
 part1_input = do
-    part1 17263 "2025/day04/input.txt" day04part1
+    part1 1537 "2025/day04/input.txt" day04part1
 
 part2_example = do
-    part2 3121910778619 "2025/day04/example.txt" day04part2
+    part2 43 "2025/day04/example.txt" day04part2
 
 part2_input = do
     part2 170731717900423 "2025/day04/input.txt" day04part2
@@ -28,6 +28,15 @@ day04part1 xn = trace (Maze.showMaze (:[]) maze HS.empty) (toInteger $ length ac
         accessibles = filter accessible rollLocations
         accessible (Maze.Located loc _) = (length $ filter (\(Maze.Located _ c)  -> c =='@') $ Maze.neighbours8 maze loc) < 4
 
+reduceRolls :: Integer -> Maze.Maze Char -> (Integer, Maze.Maze Char)
+reduceRolls count maze = (newCount, newMaze)
+    where rollLocations = Maze.findAll maze '@'
+          accessibles = filter accessible rollLocations
+          accessible (Maze.Located loc _) = (length $ filter (\(Maze.Located _ c)  -> c =='@') $ Maze.neighbours8 maze loc) < 4
+          numAccessible = toInteger (length accessibles)
+          (newCount, newMaze) = if numAccessible == 0 then (count, maze)
+           else reduceRolls (count + numAccessible) (foldl (\m (Maze.Located loc _) -> Maze.set '.' loc m) maze accessibles)
 
 day04part2 :: [String] -> Integer
-day04part2 xn = 42
+day04part2 xn = fst $ reduceRolls 0 maze
+    where maze = Maze.parse id xn
