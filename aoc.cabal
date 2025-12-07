@@ -76,3 +76,9 @@ executable aoc2024day16
     build-depends:    util
     main-is:          Day16.hs
     hs-source-dirs:   aoc/2024/Day16
+
+executable aoc2025day07
+    import:           warnings, depends
+    build-depends:    util
+    main-is:          Day07.hs
+    hs-source-dirs:   aoc/2025/Day07
