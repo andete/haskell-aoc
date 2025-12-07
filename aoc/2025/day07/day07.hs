@@ -24,7 +24,7 @@ part2_example = do
     part2 40 "2025/day07/example.txt" day07part2
 
 part2_input = do
-    part2 8707 "2025/day07/input.txt" day07part2
+    part2 221371496188107 "2025/day07/input.txt" day07part2
 
 beam :: Maze.Maze Char -> [Location] -> [Location] -> ([Location], Maze.Maze Char)
 beam maze splittersSeen [] = (splittersSeen, maze)
