@@ -17,7 +17,7 @@ part1_input = do
     part1 1537 "2025/day08/input.txt" (day08part1 1000)
 
 part2_example = do
-    part2 40 "2025/day08/example.txt" day08part2
+    part2 25272 "2025/day08/example.txt" day08part2
 
 part2_input = do
     part2 221371496188107 "2025/day08/input.txt" day08part2
@@ -29,21 +29,23 @@ combinations n (x:xs) = map (x:) (combinations (n-1) xs) ++ combinations n xs
 
 data Pair = Pair L.Location3 L.Location3 Double  deriving (Eq,Show, Ord)
 
-data Circuit = Circuit [L.Location3] deriving (Eq,Show, Ord)
+data Circuit = Circuit (HS.HashSet L.Location3) deriving (Eq,Show, Ord)
+
+size (Circuit locs) = HS.size locs
 
 makeCircuit :: ([Pair], [Circuit]) -> ([Pair], [Circuit])
 makeCircuit (unseenCombinations, existingCircuits) = output
     where nextCombination = head unseenCombinations
           remainingCombinations = tail unseenCombinations
           Pair loc1 loc2 _ = nextCombination
-          findCircuitsContaining loc = filter (\(Circuit locs) -> loc `elem` locs) existingCircuits
+          findCircuitsContaining loc = filter (\(Circuit locs) -> loc `HS.member` locs) existingCircuits
           matchingCircuits = findCircuitsContaining loc1 ++ findCircuitsContaining loc2
           output = case matchingCircuits of
-            [] -> (remainingCombinations, (Circuit [loc1, loc2]) : existingCircuits)
+            [] -> (remainingCombinations, (Circuit (HS.fromList [loc1, loc2])) : existingCircuits)
             [h]  -> let (Circuit locs) = h in
-                (remainingCombinations, (Circuit (nub (loc1:loc2:locs))) : (filter (\c -> c /= h) existingCircuits))
-            [h1,h2] -> (remainingCombinations, (Circuit (nub (loc1:loc2:locs))) : (filter (\c -> c /= h1 && c /= h2) existingCircuits))
-                where (Circuit locs) = let (Circuit l1) = h1; (Circuit l2) = h2 in Circuit (l1 ++ l2)
+                (remainingCombinations, (Circuit (HS.fromList (loc1:loc2:HS.toList locs))) : (filter (\c -> c /= h) existingCircuits))
+            [h1,h2] -> (remainingCombinations, (Circuit (HS.fromList (loc1:loc2:HS.toList locs))) : (filter (\c -> c /= h1 && c /= h2) existingCircuits))
+                where (Circuit locs) = let (Circuit l1) = h1; (Circuit l2) = h2 in Circuit (HS.union l1 l2)
           
 
 
@@ -58,4 +60,14 @@ day08part1 count xn = trace (show sizes) result
           result = toInteger $ product $ take 3 sizes
 
 day08part2 :: [String] -> Integer
-day08part2 xn = 42
+day08part2 xn = toInteger result
+    where parseLine x = L.fromList $ map read (splitOn "," x) :: L.Location3
+          locations = map parseLine xn
+          locationCombinations = map (\[a,b] -> Pair a b (L.distance a b)) $ combinations 2 locations
+          sortedCombinations = sortBy (\(Pair _ _ d1) (Pair _ _ d2) -> compare d1 d2) locationCombinations
+          finish (_, circuits) = length circuits == 1 && size (head circuits) == length locations
+          (newS, [circuit]) = until finish makeCircuit (sortedCombinations, [])
+          nextCombinations = head newS
+          (Just index) = elemIndex nextCombinations sortedCombinations
+          (Pair a b _) = sortedCombinations !! (index - 1)
+          result = L.x a * L.x b
