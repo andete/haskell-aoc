@@ -1,7 +1,8 @@
-module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', neighbours'dir, items, set, around, neighboursAltOrder, parseItemList, width, height, neighbours8) where
+module Util.Maze(Maze(..), Located(..), parse, showMaze, findAll, at, at', neighbours, neighboursDir, neighbours', 
+neighbours'dir, items, set, around, neighboursAltOrder, parseItemList, width, height, neighbours8, emptyCharMaze) where
 
 import qualified Data.Vector as V
-import Util.Location (Location (..))
+import Util.Location (Location (..), x)
 import qualified Util.Direction4 as Direction4
 import qualified Util.Direction8 as Direction8
 import qualified Data.HashSet as HS
@@ -25,6 +26,10 @@ parseItemList makeItems input = Maze . V.fromList $ zipWith (\y c -> parseMazeIt
 
 parse :: (Char -> a) -> [String] -> Maze a
 parse make input = Maze . V.fromList $ zipWith (parseMazeLine make) [0..] input
+
+emptyCharMaze :: Char -> Int -> Int -> Maze Char
+emptyCharMaze value xsize ysize = Maze . V.fromList $ zipWith (parseMazeLine id) [0..] input  
+    where input = replicate ysize (replicate xsize value)  
 
 showLocated :: (a -> String) ->  HS.HashSet Location -> Located a -> String
 showLocated showing visited (Located loc c) = if loc `elem` visited then "\ESC[31m" ++ showing c ++ "\ESC[0m" else showing c

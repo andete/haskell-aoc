@@ -2,7 +2,12 @@ module Util.Location(Location(..), x ,y, fromList, hammingDistance) where
 
 import Data.Hashable (Hashable, hashWithSalt)
 
-data Location = Location Int Int deriving (Eq,Show, Ord)
+data Location = Location Int Int deriving (Eq,Show)
+
+instance Ord Location where
+    compare (Location x1 y1) (Location x2 y2) = case compare y1 y2 of
+        EQ -> compare x1 x2
+        other -> other
 
 instance Hashable Location where
     hashWithSalt salt (Location x y) = hashWithSalt salt (x,y)
